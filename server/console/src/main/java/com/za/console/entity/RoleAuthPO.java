@@ -25,7 +25,7 @@ public class RoleAuthPO {
     @Column(name = "permission")
     private String permission;
 
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "module_Id",referencedColumnName = "id")
     private ModulePO module;
 

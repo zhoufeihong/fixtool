@@ -13,6 +13,9 @@ import com.za.console.service.dto.RoleDTO;
 import com.za.console.service.dto.UserDTO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@CacheConfig(cacheNames = "user")
 public class UserService {
 
     // 过期时间8分钟
@@ -38,6 +42,7 @@ public class UserService {
      * @param id
      * @return
      */
+    @Cacheable(key = "#id")
     public ResultDTO<UserDTO> getUser(long id) {
         UserPO userPO = userReponsitory.findById(id).orElse(null);
         if (userPO == null) {
@@ -101,6 +106,7 @@ public class UserService {
      * @param userDto
      * @return
      */
+    @CachePut(key = "#userDto.id")
     public ResultDTO updateUser(UserDTO userDto) {
         AssertExtUtils.notEmpty(userDto, "userDto");
         UserPO userPO = userReponsitory.findById(userDto.getId()).orElse(null);
@@ -109,7 +115,7 @@ public class UserService {
         userPO.setStatus(userDto.getStatus());
         userPO.setName(userDto.getName());
         userReponsitory.saveAndFlush(userPO);
-        return ResultDTO.success();
+        return ResultDTO.success(BeanExtUtils.copyProperties(userPO,UserDTO.class));
     }
 
     /**
@@ -165,8 +171,7 @@ public class UserService {
      */
     public ResultDTO<UserDTO> getUserInfo(String accessToken) {
         String userName = JWTUtils.getUsername(accessToken);
-        if(StringUtils.isBlank(userName))
-        {
+        if (StringUtils.isBlank(userName)) {
             return ResultDTO.error("无效秘钥.");
         }
         UserPO userPO = userReponsitory.findByUserName(userName);
@@ -186,8 +191,7 @@ public class UserService {
      */
     public ResultDTO refreshToken(String accessToken) {
         String userName = JWTUtils.getUsername(accessToken);
-        if(StringUtils.isBlank(userName))
-        {
+        if (StringUtils.isBlank(userName)) {
             return ResultDTO.error("无效秘钥.");
         }
         UserPO userPO = userReponsitory.findByUserName(userName);

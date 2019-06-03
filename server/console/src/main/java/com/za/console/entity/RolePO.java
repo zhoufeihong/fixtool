@@ -29,7 +29,7 @@ public class RolePO {
     @Column(name = "status")
     private Integer status;
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "role_Id",referencedColumnName = "id")
     private Set<RoleAuthPO> roleAuths;
 

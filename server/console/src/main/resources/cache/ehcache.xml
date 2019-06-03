@@ -37,6 +37,14 @@
            eternal="false"
            timeToIdleSeconds="300"
            timeToLiveSeconds="600"
+           overflowToDisk="false"
+    />
+
+    <cache name="module"
+           maxElementsInMemory="100"
+           eternal="false"
+           timeToIdleSeconds="300"
+           timeToLiveSeconds="600"
            overflowToDisk="true"
     />
 

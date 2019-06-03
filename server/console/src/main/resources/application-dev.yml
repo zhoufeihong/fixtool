@@ -15,7 +15,7 @@ spring:
     hibernate:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-#      ddl-auto: update
+    #      ddl-auto: update
     show-sql: true
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
@@ -25,6 +25,31 @@ spring:
   sleuth:
     sampler:
       probability: 1.0 # 0到1之间，1表示全部采样
+  cache:
+    type: ehcache
+    ehcache:
+      config: classpath:cache/ehcache.xml
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    jedis:
+      pool:
+        max-idle: 100
+        min-idle: 1
+        max-active: 1000
+        max-wait: -1
+
+cache:
+  use2L: false
+  multi:
+    redis:
+      defaultExpiration: 60000
+      expires:
+        consoleCache: 20000
+        permissionCache: 20000
+    ehcache:
+      config: classpath:cache/ehcache.xml
+
 eureka:
   client:
     serviceUrl:

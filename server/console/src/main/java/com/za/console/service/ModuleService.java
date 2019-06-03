@@ -1,7 +1,9 @@
 package com.za.console.service;
 
-import com.za.console.entity.RolePO;
-import com.za.console.service.dto.RoleDTO;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import za.framework.dto.PageRequestDTO;
 import za.framework.dto.PageResultDTO;
 import com.za.common.dto.ResultDTO;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@CacheConfig(cacheNames = "module")
 public class ModuleService {
 
     private static final String MODULEDTO_PARAM = "moduleDTO";
@@ -31,6 +34,7 @@ public class ModuleService {
      * @param id
      * @return
      */
+    @Cacheable(key = "#id")
     public ResultDTO<ModuleDTO> getModuleDTO(Long id) {
         return ResultDTO.success(BeanExtUtils.copyProperties(moduleReponsitory.findById(id).orElse(null), ModuleDTO.class));
     }
@@ -94,6 +98,7 @@ public class ModuleService {
      * @param moduleDTO
      * @return
      */
+    @CacheEvict(key = "#moduleDTO.id")
     public ResultDTO removeModule(ModuleDTO moduleDTO) {
         AssertExtUtils.notEmpty(moduleDTO, MODULEDTO_PARAM);
         ModulePO modulePO = moduleReponsitory.findById(moduleDTO.getId()).orElse(null);
@@ -110,6 +115,7 @@ public class ModuleService {
      * @param moduleDTO
      * @return
      */
+    @CachePut(key = "#moduleDTO.id")
     public ResultDTO updateModule(ModuleDTO moduleDTO) {
         AssertExtUtils.notEmpty(moduleDTO, MODULEDTO_PARAM);
         ModulePO modulePO = moduleReponsitory.findById(moduleDTO.getId()).orElse(null);
@@ -134,7 +140,7 @@ public class ModuleService {
         modulePO.setOptions(moduleDTO.getOptions());
         modulePO.setRankIndex(moduleDTO.getRankIndex());
         moduleReponsitory.saveAndFlush(modulePO);
-        return ResultDTO.success();
+        return ResultDTO.success(BeanExtUtils.copyProperties(modulePO,ModuleDTO.class));
     }
 
     /**

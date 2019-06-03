@@ -69,7 +69,7 @@ public class UserPO {
     @Basic
     private String mfaSecret;
 
-    @ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.LAZY)
+    @ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
     @JoinTable(name = "t_user_role", joinColumns = { @JoinColumn(name = "user_id", referencedColumnName = "id") },
             inverseJoinColumns = { @JoinColumn(name = "role_id", referencedColumnName = "id") })
     private Set<RolePO> roles;

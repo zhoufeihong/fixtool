@@ -3,9 +3,11 @@ package za.framework.dto;
 import com.za.common.dto.ResultDTO;
 import com.za.common.utils.BeanExtUtils;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.data.domain.Page;
 
 @Data
+@EqualsAndHashCode(callSuper=true)
 public class PageResultDTO<T> extends ResultDTO<T> {
 
     private Integer total;

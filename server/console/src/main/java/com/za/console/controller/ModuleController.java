@@ -20,6 +20,12 @@ public class ModuleController {
     @Autowired
     ModuleService moduleService;
 
+    @ApiOperation(value = "获取菜单信息")
+    @GetMapping("/getModule")
+    public ResultDTO<ModuleDTO> getModuleDTO(Long id) {
+        return  moduleService.getModuleDTO(id);
+    }
+
     @ApiOperation(value = "查询菜单信息")
     @GetMapping("/listMenu")
     public ResultDTO<MenuDTO> listMenu() {
@@ -34,7 +40,7 @@ public class ModuleController {
 
     @ApiOperation(value = "查询模块信息")
     @GetMapping("/listModule")
-    public ResultDTO<List<ModuleDTO>> listModule(String name, Integer page, Integer limit,String sort) {
+    public ResultDTO<List<ModuleDTO>> listModule(String name, Integer page, Integer limit, String sort) {
         return moduleService.listModuleDTO(name, PageRequestDTO.ofOperation(page - 1, limit, sort));
     }
 

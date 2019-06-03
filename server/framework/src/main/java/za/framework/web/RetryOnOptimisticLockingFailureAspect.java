@@ -1,10 +1,12 @@
 package za.framework.web;
 
+import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.dao.OptimisticLockingFailureException;
 
+@Slf4j
 public class RetryOnOptimisticLockingFailureAspect {
 
     private static final int maxRetries = 2;
@@ -22,10 +24,10 @@ public class RetryOnOptimisticLockingFailureAspect {
                 return pjp.proceed();
             } catch (OptimisticLockingFailureException ex) {
                 if (numAttempts > maxRetries) {
-                    //log failure information, and throw exception
+                    log.error(ex.toString());
                     throw ex;
                 } else {
-                    //log failure information for audit/reference
+                    log.error("doConcurrentOperation:" + pjp.getSignature().getName() + pjp.getArgs());
                     //will try recovery
                 }
             }
