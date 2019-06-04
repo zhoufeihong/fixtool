@@ -85,7 +85,7 @@ public class ResultDTO<T> implements Serializable {
         return result;
     }
 
-    public static <T> ResultDTO<T> error(String msg, String... args){
+    public static <T> ResultDTO<T> error(String msg, Object... args){
         return error(String.format(msg, args));
     }
 

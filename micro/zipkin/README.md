@@ -1,4 +1,4 @@
-1、先下载zipkin的jar包，放到目录start下
+1、先下载zipkin的jar包，放到start目录下
     下载地址:https://repo1.maven.org/maven2/io/zipkin/java/zipkin-server/，选择版本
 
 2、start下有两种启动方式

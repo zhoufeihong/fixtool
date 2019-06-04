@@ -15,6 +15,9 @@ public class CacheMessage implements Serializable {
 
     private Integer sender;
 
+    public CacheMessage() {
+    }
+
     public CacheMessage(String cacheName, Object key) {
         super();
         this.cacheName = cacheName;
