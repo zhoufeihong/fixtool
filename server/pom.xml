@@ -6,15 +6,18 @@
         <artifactId>fixtools</artifactId>
         <groupId>com.za.fixtools</groupId>
         <version>${fixtool.version}</version>
+        <relativePath>../</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>server</artifactId>
     <packaging>pom</packaging>
     <version>${fixtool.server.version}</version>
+
     <modules>
         <module>console</module>
         <module>framework</module>
     </modules>
+
     <properties>
         <fixtool.server.version>0.0.1-SNAPSHOT</fixtool.server.version>
         <fixtool.server.framework.version>0.0.1-SNAPSHOT</fixtool.server.framework.version>
@@ -111,13 +114,4 @@
         </dependency>
 
     </dependencies>
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>de.codecentric</groupId>
-                <artifactId>spring-boot-admin-starter-client</artifactId>
-                <version>2.1.5</version>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 </project>

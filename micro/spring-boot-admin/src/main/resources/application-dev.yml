@@ -1,9 +1,3 @@
-spring:
-  application:
-    name: spring-boot-admin
-  profiles:
-    active:
-      - secure
 server:
   port: 7751
 
@@ -13,10 +7,14 @@ eureka:   #<1>
   instance:
     leaseRenewalIntervalInSeconds: 10
     health-check-url-path: /actuator/health
+    metadata-map:
+      user.name: ${spring.security.user.name}
+      user.password: ${spring.security.user.password}
   client:
     registryFetchIntervalSeconds: 5
     serviceUrl:
       defaultZone: ${EUREKA_SERVICE_URL:http://localhost:7761}/eureka/
+
 
 management:
   endpoints:
@@ -28,6 +26,12 @@ management:
       show-details: ALWAYS
 
 # end::configuration-eureka[]
+
+spring:
+  boot:
+    admin:
+      hazelcast:
+        enabled: false
 
 ---
 spring:

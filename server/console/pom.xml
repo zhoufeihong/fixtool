@@ -7,10 +7,11 @@
         <artifactId>server</artifactId>
         <groupId>com.za.fixtools</groupId>
         <version>${fixtool.server.version}</version>
+        <relativePath>../</relativePath>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-
+    <groupId>com.za.fixtools</groupId>
     <artifactId>console</artifactId>
     <dependencies>
         <dependency>
@@ -31,11 +32,6 @@
         <dependency>
             <groupId>de.codecentric</groupId>
             <artifactId>spring-boot-admin-starter-client</artifactId>
-        </dependency>
-        <!--jmx依赖-->
-        <dependency>
-            <groupId>org.jolokia</groupId>
-            <artifactId>jolokia-core</artifactId>
         </dependency>
     </dependencies>
 </project>

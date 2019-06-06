@@ -49,7 +49,7 @@ public class ResultDTO<T> implements Serializable {
 
     public static <T> ResultDTO<T> success(String msg, T data) {
         ResultDTO<T> result = new ResultDTO<>();
-        result.setCode(1);
+        result.setCode(SUCCESS);
         result.setData(data);
         if (msg == null) {
             msg = "执行成功";
@@ -73,14 +73,14 @@ public class ResultDTO<T> implements Serializable {
 
     public static <T> ResultDTO<T> exception(String msg) {
         ResultDTO<T> result = new ResultDTO<>();
-        result.setCode(1);
+        result.setCode(EXCEPTION);
         result.setMsg(msg == null ? "执行失败！" : msg);
         return result;
     }
 
     public static <T> ResultDTO<T> error(String msg) {
         ResultDTO<T> result = new ResultDTO<>();
-        result.setCode(0);
+        result.setCode(ERROR);
         result.setMsg(msg == null ? "执行失败！" : msg);
         return result;
     }

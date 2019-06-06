@@ -53,7 +53,7 @@ public class UserController {
 
     @ApiOperation(value = "获取Token")
     @PostMapping("/getToken")
-    public ResultDTO getToken(@RequestBody  GetTokenParam getTokenParam) {
+    public ResultDTO getToken(@RequestBody GetTokenParam getTokenParam) {
         return userService.getToken(getTokenParam.getUserName(), getTokenParam.getPassword());
     }
 
@@ -79,7 +79,7 @@ public class UserController {
     @ApiOperation(value = "退出登录")
     @GetMapping("/logout")
     public ResultDTO logout() {
-       return ResultDTO.success();
+        return ResultDTO.success();
     }
 
 }

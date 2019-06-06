@@ -1,11 +1,11 @@
 package com.za.gateway.filter;
 
 import com.alibaba.fastjson.JSONObject;
+import com.za.common.constant.Constant;
 import com.za.common.dto.ResultDTO;
 import com.za.gateway.service.IUserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -21,33 +21,28 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
-import static org.springframework.web.cors.CorsConfiguration.ALL;
-
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
-import com.za.common.constant.*;
+import static org.springframework.web.cors.CorsConfiguration.ALL;
 
 @Log4j2
 @Component
-public class Config {
+public class AuthenticationFilter {
 
     @Autowired
     private IUserService userService;
-    @Autowired
-    private CacheManager cacheManager;
 
     private static final String MAX_AGE = "18000L";
 
     @Bean
     public GlobalFilter authFilter() {
         return (exchange, chain) -> {
-            log.info("before权限验证拦截器...");
             ServerHttpRequest request = exchange.getRequest();
             ServerHttpResponse response = exchange.getResponse();
 
+            //不需要拦截的请求，直接跳过
             if (!this.needFilter(request.getPath().pathWithinApplication().value())) {
                 return chain.filter(exchange);
             }
@@ -58,8 +53,7 @@ public class Config {
             } else {
                 try {
                     ResultDTO resultDTO = userService.getUserInfo(accessTokens.get(0));
-                    if(resultDTO.getCode() != ResultDTO.SUCCESS)
-                    {
+                    if (resultDTO.getCode() != ResultDTO.SUCCESS) {
                         return response401(response, HttpStatus.NON_AUTHORITATIVE_INFORMATION, "权限已经失效，请重新登录！");
                     }
                     LinkedHashMap linkedHashMap = (LinkedHashMap) resultDTO.getData();
@@ -75,9 +69,7 @@ public class Config {
                     return response401(response, HttpStatus.UNAUTHORIZED, "权限已经失效，请重新登录！");
                 }
             }
-            return chain.filter(exchange).then(Mono.fromRunnable(() -> {
-                log.info("拦截之后处理");
-            }));
+            return chain.filter(exchange);
         };
     }
 
@@ -111,6 +103,9 @@ public class Config {
 
     private boolean needFilter(String path) {
         if (path.equals("/user/getToken") || path.equals("/user/refreshToken")) {
+            return false;
+        }
+        if (path.startsWith("/actuator/")) {
             return false;
         }
         return true;

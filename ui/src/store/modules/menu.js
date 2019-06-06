@@ -49,12 +49,19 @@ const listRouter = (menus) => {
         children: []
       }
     } else {
+      if (menu.url != null && (!menu.url.startsWith('http') && !menu.url.startsWith('https'))) {
+        return {
+          path: menu.url,
+          name: menu.name,
+          component: (resolve) => {
+            require(['@/views' + menu.url + '.vue'], resolve)
+          },
+          meta: { title: menu.name, icon: 'dashboard' }
+        }
+      }
       return {
         path: menu.url,
         name: menu.name,
-        component: (resolve) => {
-          require(['@/views' + menu.url + '.vue'], resolve)
-        },
         meta: { title: menu.name, icon: 'dashboard' }
       }
     }

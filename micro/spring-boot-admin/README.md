@@ -1,0 +1,1 @@
+关于Spring boot admin可以参考:http://codecentric.github.io/spring-boot-admin/2.0.0/

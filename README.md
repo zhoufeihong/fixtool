@@ -18,6 +18,8 @@
     2、初始化数据库
         2.1、新建数据库console，使用server/console/script/dbScript/init/console.sql进行初始化
         2.2、配置server/console项目application-dev.yml里的数据库连接
+        2.3、配置server/console项目application-dev.yml里配置redis，也可以不配置(redis监控状态会为DOWN)
+     3、redis环境可以在https://github.com/microsoftarchive/redis/releases下载，选择文件Redis-x64-3.2.100.zip，运行解压文件中的redis-server.exe即可          
 
     后端项目启动:
     1、运行micro/eureka注册中心项目  可以打开网址http://localhost:7761 查看eureka注册中心界面
