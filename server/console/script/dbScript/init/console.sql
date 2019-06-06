@@ -42,10 +42,10 @@ INSERT INTO `t_module` VALUES (2, '模块信息管理', '/module/index', 1, 1, 1
 INSERT INTO `t_module` VALUES (3, '用户信息管理', '/user/all', 1, 1, 1, 'all,query,add,update,del,auth', 100200, 0, 0);
 INSERT INTO `t_module` VALUES (4, '角色信息管理', '/role/all', 1, 1, 1, 'all,query,add,update,del,auth', 100300, 0, 0);
 INSERT INTO `t_module` VALUES (5, '微服务管理界面', '', 0, 0, 1, '', 200000, 2, 0);
-INSERT INTO `t_module` VALUES (6, 'Eureka', 'http://localhost:7761/', 28, 0, 1, '', 200100, 4, 0);
-INSERT INTO `t_module` VALUES (7, 'SpringBootAdmin', 'http://localhost:7751/', 28, 0, 1, '', 200200, 2, 0);
-INSERT INTO `t_module` VALUES (8, 'Zipkin', 'http://localhost:9411', 28, 0, 1, '', 200300, 2, 0);
-INSERT INTO `t_module` VALUES (9, 'SwaggerUi', 'http://localhost:7005/swagger-ui.html', 28, 0, 1, '', 200400, 3, 0);
+INSERT INTO `t_module` VALUES (6, 'Eureka', 'http://localhost:7761/', 5, 0, 1, '', 200100, 4, 0);
+INSERT INTO `t_module` VALUES (7, 'SpringBootAdmin', 'http://localhost:7751/', 5, 0, 1, '', 200200, 2, 0);
+INSERT INTO `t_module` VALUES (8, 'Zipkin', 'http://localhost:9411', 5, 0, 1, '', 200300, 2, 0);
+INSERT INTO `t_module` VALUES (9, 'SwaggerUi', 'http://localhost:7005/swagger-ui.html', 5, 0, 1, '', 200400, 3, 0);
 
 -- ----------------------------
 -- Table structure for t_role

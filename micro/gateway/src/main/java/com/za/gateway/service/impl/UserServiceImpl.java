@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class UserServiceImpl implements IUserService {
 
     @Override
-  public String getUser(@RequestParam("id") long id){
-        return "{\"code\": 0, \"msg\": \"查询失败，请稍后重试。\"}";
+    public ResultDTO getUser(@RequestParam("id") long id) {
+        return ResultDTO.error("获取用户信息失败，请稍后重试。");
     }
 
     @Override
     public ResultDTO getUserInfo(String accessToken) {
-        return ResultDTO.error("获取用户信息.");
+        return ResultDTO.error("获取用户信息失败，请稍后重试.");
     }
 
 }
