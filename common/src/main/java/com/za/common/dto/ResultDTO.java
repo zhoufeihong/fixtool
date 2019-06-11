@@ -5,6 +5,9 @@ import com.za.common.constant.Constant;
 import java.io.Serializable;
 
 public class ResultDTO<T> implements Serializable {
+
+    private static final  long  serialVersionUID = 1234567L;
+
     private int code;
     private String specificCode;
     private String msg;

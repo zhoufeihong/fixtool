@@ -41,7 +41,7 @@
       </el-table-column>
       <el-table-column label="权限">
         <template slot-scope="scope">
-          <span>{{ scope.row.options }}</span>
+          <span>{{ scope.row.permissionResourcesCode }}</span>
         </template>
       </el-table-column>
       <el-table-column label="排序" prop="rankIndex" width="110px" align="center" />
@@ -81,7 +81,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="权限">
-          <el-input v-model="temp.options" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
+          <el-input v-model="temp.permissionResourcesCode" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" />
         </el-form-item>
         <el-form-item label="排序">
           <el-input v-model="temp.rankIndex" :max="3" style="margin-top:8px;" type="number" />
@@ -139,7 +139,7 @@ export default {
         parentId: 0,
         isLeaf: '',
         status: 1,
-        options: '',
+        permissionResourcesCode: '',
         rankIndex: 0
       },
       statusOptions: [{ key: 1, name: '有效' }, { key: 0, name: '无效' }],
@@ -205,7 +205,7 @@ export default {
         parentId: 0,
         isLeaf: '',
         status: 1,
-        options: '',
+        permissionResourcesCode: '',
         rankIndex: 0
       }
     },

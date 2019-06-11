@@ -8,15 +8,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
 @Configuration
 public class UserAuditorBean implements AuditorAware<String> {
-
-    @Autowired
-    private HttpServletRequest request;
 
     @Autowired
     private UserService userService;
@@ -43,12 +42,16 @@ public class UserAuditorBean implements AuditorAware<String> {
     }
 
     private Optional<String> returnUserId() {
-        if (request != null) {
-            String token = request.getHeader("Authorization");
-            if (StringUtils.isNotBlank(token)) {
-                ResultDTO<Long> result = userService.getUserId(token);
-                if (result.getCode() == ResultDTO.SUCCESS_CODE) {
-                    return Optional.of(result.getData().toString());
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (servletRequestAttributes != null) {
+            HttpServletRequest request = servletRequestAttributes.getRequest();
+            if (request != null) {
+                String token = request.getHeader("Authorization");
+                if (StringUtils.isNotBlank(token)) {
+                    ResultDTO<Long> result = userService.getUserId(token);
+                    if (result.getCode() == ResultDTO.SUCCESS_CODE) {
+                        return Optional.of(result.getData().toString());
+                    }
                 }
             }
         }

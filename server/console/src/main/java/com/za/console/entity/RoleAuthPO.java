@@ -7,19 +7,24 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Data
 @Entity
 @Table(name = "T_Role_Auth")
-@JsonIgnoreProperties(value = { "hibernateLazyInitializer"})
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer"})
 @SQLDelete(sql = "update T_Role_Auth set deleted = 1 where id = ? and version = ?")
 @Where(clause = "deleted = 0")
-public class RoleAuthPO extends AbstractAuditingWithVersionPo {
+public class RoleAuthPO extends AbstractAuditingWithVersionPo implements Serializable {
 
     @Column(name = "role_id")
     private Long roleId;
 
     @Column(name = "permission_resources_code")
     private String permissionResourcesCode;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "permission_resources_code", referencedColumnName = "code",insertable = false,updatable = false)
+    private PermissionResourcePO permissionResource;
 
 }

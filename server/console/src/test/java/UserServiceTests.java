@@ -2,6 +2,7 @@ import com.za.common.dto.ResultDTO;
 import com.za.console.ConsoleApplication;
 import com.za.console.entity.RolePO;
 import com.za.console.entity.UserPO;
+import com.za.console.entity.UserRolePO;
 import com.za.console.reponsitory.RoleReponsitory;
 import com.za.console.reponsitory.UserReponsitory;
 import com.za.console.service.RoleService;
@@ -44,7 +45,7 @@ public class UserServiceTests {
     @Transactional
     public void getUserTest() {
         UserPO user = userReponsitory.getOne(1L);
-        Set<RolePO> roles = user.getRoles();
+        Set<?> roles = user.getUserRoles();
         Assert.assertNotNull(user);
         Assert.assertTrue(roles.size() > 0);
     }
@@ -59,19 +60,18 @@ public class UserServiceTests {
             user.getRoles().remove(r);
         }
         RoleDTO role = roleService.getRole(2L).getData();
-        ResultDTO<UserDTO> userODto = userService.getUser(1L);
         user.getRoles().add(role);
-        userService.updateRole(userODto.getData());
+        userService.updateRole(user);
     }
 
     @Test
     @Transactional
     public void listUserTest()
     {
-       ResultDTO<List<UserDTO>> userDtoList =  userService.listUser("c");
+       ResultDTO<List<UserDTO>> userDtoList =  userService.listUser("admin");
        Assert.assertTrue(userDtoList.getData().size() > 0);
        ResultDTO result = userService.getToken("admin","123456");
-       Assert.assertEquals(result.getCode(),1);
+       Assert.assertEquals(result.getCode(),1L);
     }
 
     @Before

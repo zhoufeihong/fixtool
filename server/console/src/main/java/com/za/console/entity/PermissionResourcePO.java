@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Data
 @Entity
@@ -18,8 +19,7 @@ import javax.persistence.Table;
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer"})
 @SQLDelete(sql = "update t_permission_resource set deleted = 1 where id = ? and version = ?")
 @Where(clause = "deleted = 0")
-@EntityListeners(AuditingEntityListener.class)
-public class PermissionResourcePO extends AbstractAuditingWithVersionPo {
+public class PermissionResourcePO extends AbstractAuditingWithVersionPo implements Serializable {
 
     @Column(name = "code")
     private String code;

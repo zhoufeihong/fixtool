@@ -1,7 +1,9 @@
 import com.za.common.dto.ResultDTO;
 import com.za.common.utils.BeanExtUtils;
 import com.za.console.ConsoleApplication;
+import com.za.console.entity.PermissionResourcePO;
 import com.za.console.service.RoleService;
+import com.za.console.service.dto.PermissionResourceDTO;
 import com.za.console.service.dto.RoleAuthDTO;
 import com.za.console.service.dto.RoleDTO;
 import org.junit.After;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.Assert;
 
 import javax.transaction.Transactional;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
@@ -36,16 +39,19 @@ public class RoleServiceTests {
         roleDTO.setName("AbstractAuditingPo");
         roleDTO.setCode("aa");
         roleDTO.setStatus(1);
-        Assert.isTrue(roleService.addRole(roleDTO).getCode() == 0, "角色添加测试失败");
+        Assert.isTrue(roleService.addRole(roleDTO).getCode() == 1, "角色添加测试失败");
     }
 
     @Test
     @Transactional
     @Rollback(false)
     public void removeRoleTest() {
-        RoleDTO roleDTO = new RoleDTO();
-        roleDTO.setId(9L);
-        Assert.isTrue(roleService.removeRole(roleDTO).getCode() == 0, "角色删除失败");
+        ResultDTO<List<RoleDTO>> result = roleService.listRole("AbstractAuditingPo");
+        Assert.isTrue(result.getCode() == 1,"roleService.listRole失败");
+        if(result.getData().size() > 0) {
+            RoleDTO roleDTO = result.getData().get(0);
+            Assert.isTrue(roleService.removeRole(roleDTO).getCode() == 1, "角色删除失败");
+        }
     }
 
     @Test
@@ -54,18 +60,21 @@ public class RoleServiceTests {
         ResultDTO<List<RoleDTO>> result = roleService.listRole("管理员");
         System.out.println(result.getData());
         System.out.println(result.getData().size());
-        System.out.println(result.getData().toArray(new RoleDTO[result.getData().size()])[0].getRoleAuths());
+        System.out.println(result.getData().toArray(new RoleDTO[result.getData().size()])[0].getPermissionResources());
     }
 
     @Test
     @Transactional
     @Rollback(false)
     public void updateRoleTest() {
-        ResultDTO<List<RoleDTO>> result = roleService.listRole("管理员");
-        RoleDTO role = result.getData().get(0);
-        Random rd = new Random();
-        role.setName(role.getName() + rd.nextInt(1000));
-        roleService.updateRole(role);
+        ResultDTO<List<RoleDTO>> result = roleService.listRole("代理");
+        Assert.isTrue(result.getCode() == 1,"roleService.listRole失败");
+        if(result.getData().size() > 0) {
+            RoleDTO role = result.getData().get(0);
+            Random rd = new Random();
+            role.setName(role.getName() + rd.nextInt(1000));
+            roleService.updateRole(role);
+        }
     }
 
     @Test
@@ -73,9 +82,15 @@ public class RoleServiceTests {
     @Rollback(false)
     public void grantAuthorizationTest() {
         ResultDTO<List<RoleDTO>> result = roleService.listRole("管理员");
-        RoleDTO role = result.getData().get(0);
-        Set<RoleAuthDTO> roleAuthDTOS = BeanExtUtils.copyPropertiesOfList(role.getRoleAuths(), RoleAuthDTO.class);
-        role.setRoleAuths(roleAuthDTOS);
+        RoleDTO role = roleService.getRoleWithPermission(result.getData().get(0).getId()).getData();
+        Set<PermissionResourceDTO> permissionResourceDTOS = new HashSet<>(32);
+        PermissionResourceDTO permissionResourceDTO = new PermissionResourceDTO();
+        permissionResourceDTO.setCode("001001001");
+        permissionResourceDTOS.add(permissionResourceDTO);
+        permissionResourceDTO = new PermissionResourceDTO();
+        permissionResourceDTO.setCode("001001002");
+        permissionResourceDTOS.add(permissionResourceDTO);
+        role.setPermissionResources(permissionResourceDTOS);
         roleService.grantAuthorization(role);
     }
 

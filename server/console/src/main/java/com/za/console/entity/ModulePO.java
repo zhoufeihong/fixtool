@@ -8,6 +8,7 @@ import org.hibernate.annotations.Where;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Data
 @Entity
@@ -15,8 +16,7 @@ import javax.persistence.*;
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer"})
 @SQLDelete(sql = "update t_module set deleted = 1 where id = ? and version = ?")
 @Where(clause = "deleted = 0")
-@EntityListeners(AuditingEntityListener.class)
-public class ModulePO extends AbstractAuditingWithVersionPo {
+public class ModulePO extends AbstractAuditingWithVersionPo implements Serializable {
 
     @Column(name = "name")
     private String name;

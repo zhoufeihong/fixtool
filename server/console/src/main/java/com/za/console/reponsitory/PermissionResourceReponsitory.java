@@ -12,6 +12,9 @@ public interface PermissionResourceReponsitory extends JpaRepository<PermissionR
             " from t_Role tr " +
             " inner join t_Role_Auth tra on tr.id  = tra.role_Id " +
             " inner join t_Permission_Resource tpr on tra.permission_Resources_Code = tpr.code " +
-            " where tr.id = :roleId ",nativeQuery = true)
+            " where tr.id = :roleId ", nativeQuery = true)
     List<PermissionResourcePO> queryPermissionResource(@Param("roleId") Long roleId);
+
+    @Query("select p from PermissionResourcePO p where p.code=?1")
+    PermissionResourcePO findFirstByCode(String code);
 }

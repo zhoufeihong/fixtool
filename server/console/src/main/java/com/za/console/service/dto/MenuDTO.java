@@ -32,6 +32,7 @@ public class MenuDTO {
 
     /**
      * 加载子菜单，深度优先
+     *
      * @param moduleDTOS
      * @return
      */
@@ -63,6 +64,12 @@ public class MenuDTO {
             //菜单排序
             if (currentMenu.childMenus != null) {
                 currentMenu.childMenus.sort((c1, c2) -> {
+                    if (c1.getRankIndex() == null) {
+                        return -1;
+                    }
+                    if (c2.getRankIndex() == null) {
+                        return 1;
+                    }
                     if (c1.getRankIndex() > c2.getRankIndex()) {
                         return 1;
                     }
@@ -77,7 +84,8 @@ public class MenuDTO {
     }
 
     /**
-     *  输出所有菜单，广度优先
+     * 输出所有菜单，广度优先
+     *
      * @return
      */
     public List<MenuDTO> toMenuDTOList() {

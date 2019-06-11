@@ -14,5 +14,5 @@ public class RoleDTO {
 
     private Integer status;
 
-    private Set<RoleAuthDTO> roleAuths;
+    private Set<PermissionResourceDTO> permissionResources;
 }

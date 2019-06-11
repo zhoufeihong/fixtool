@@ -7,8 +7,8 @@ import com.za.common.utils.PasswordUtils;
 import com.za.console.common.utils.JWTUtils;
 import com.za.console.entity.RolePO;
 import com.za.console.entity.UserPO;
+import com.za.console.reponsitory.RoleReponsitory;
 import com.za.console.reponsitory.UserReponsitory;
-import com.za.console.service.dto.RoleAuthDTO;
 import com.za.console.service.dto.RoleDTO;
 import com.za.console.service.dto.UserDTO;
 import org.apache.commons.lang.StringUtils;
@@ -23,8 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.Predicate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @CacheConfig(cacheNames = "user")
@@ -40,6 +39,9 @@ public class UserService {
     @Autowired
     UserReponsitory userReponsitory;
 
+    @Autowired
+    RoleReponsitory roleReponsitory;
+
     /**
      * 获取用户信息
      *
@@ -54,12 +56,7 @@ public class UserService {
         }
         //复制user信息
         UserDTO userResult = BeanExtUtils.copyProperties(userPO, UserDTO.class);
-        userResult.setRoles(BeanExtUtils.copyPropertiesOfList(userPO.getRoles(), RoleDTO.class));
-        if (userPO.getRoles() != null) {
-            for (RolePO f : userPO.getRoles()) {
-                BeanExtUtils.copyPropertiesOfList(f.getRoleAuth(), RoleAuthDTO.class);
-            }
-        }
+        userResult.setRoles(BeanExtUtils.copyPropertiesOfList(userPO.getUserRoles(), RoleDTO.class));
         return ResultDTO.success(userResult);
     }
 
@@ -93,12 +90,23 @@ public class UserService {
      * @param user
      * @return
      */
+    @CachePut(key = "#user.id")
     public ResultDTO updateRole(UserDTO user) {
         AssertExtUtils.notEmpty(user, "user");
         UserPO userPo = userReponsitory.findById(user.getId()).orElse(null);
         AssertExtUtils.checkNotNull(userPo, NOT_FIND_USER);
-        userPo.setRoles(BeanExtUtils.copyPropertiesOfList(user.getRoles(), RolePO.class));
-        userReponsitory.save(userPo);
+        Set<RolePO> rolePOS = new LinkedHashSet<>();
+        if (user.getRoles() != null) {
+            for (RoleDTO roleDTO : user.getRoles()) {
+                RolePO tempRolePO = roleReponsitory.getOne(roleDTO.getId());
+                if (tempRolePO == null) {
+                    return ResultDTO.error("不能添加不存在的角色信息.");
+                }
+                rolePOS.add(tempRolePO);
+            }
+        }
+        userPo.setUserRoles(rolePOS);
+        userReponsitory.saveAndFlush(userPo);
         return ResultDTO.success();
     }
 

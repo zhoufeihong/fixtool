@@ -2,6 +2,7 @@ import com.za.common.dto.ResultDTO;
 import com.za.console.ConsoleApplication;
 import com.za.console.service.PermissionResourceService;
 import com.za.console.service.dto.PermissionResourceDTO;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +27,13 @@ public class PermissionResourceServiceTest {
     @Transactional
     public void queryPermissionResourceTest() {
         ResultDTO<List<PermissionResourceDTO>> resultDTO = permissionResourceService.queryPermissionResource(1L);
+        Assert.assertTrue(resultDTO.getCode() == ResultDTO.SUCCESS_CODE);
     }
 
     @Test
     @Transactional
     public void getPermissionResourceTest() {
         ResultDTO<PermissionResourceDTO> resultDTO = permissionResourceService.getPermissionResource(1L);
+        Assert.assertTrue(resultDTO.getCode() == ResultDTO.SUCCESS_CODE);
     }
 }

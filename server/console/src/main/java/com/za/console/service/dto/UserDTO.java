@@ -1,6 +1,7 @@
 package com.za.console.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.za.console.service.dto.base.CreateAndUpdateTime;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -8,7 +9,7 @@ import java.util.Date;
 import java.util.Set;
 
 @Data
-public class UserDTO {
+public class UserDTO extends CreateAndUpdateTime {
 
     @ApiModelProperty(value = "用户id", example = "1")
     private Long id;
@@ -21,23 +22,6 @@ public class UserDTO {
     private String name;
 
     private String email;
-
-    private Date createTime;
-
-    public Date getCreateTime() {
-        if (createTime != null) {
-            return (Date) createTime.clone();
-        }
-        return null;
-    }
-
-    public void setCreateTime(Date createTime) {
-        if (createTime != null) {
-            this.createTime = (Date) createTime.clone();
-        } else {
-            this.createTime = null;
-        }
-    }
 
     private String avatar;
 
