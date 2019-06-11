@@ -70,6 +70,8 @@ management:
   endpoint:
     health:
       show-details: ALWAYS  #显示详细信息
+  server:
+    port: 7772 #使用其他端口，生产环境端口权限进行限制
 
 # 服务注册中心
 eureka:

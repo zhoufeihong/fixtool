@@ -1,23 +1,22 @@
 package com.za.console.entity;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.za.console.entity.base.AbstractAuditingWithVersionPo;
 import lombok.Data;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 
 @Data
 @Entity
 @Table(name = "t_module")
-@JsonIgnoreProperties(value = { "hibernateLazyInitializer"})
+@JsonIgnoreProperties(value = {"hibernateLazyInitializer"})
 @SQLDelete(sql = "update t_module set deleted = 1 where id = ? and version = ?")
 @Where(clause = "deleted = 0")
-public class ModulePO {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+@EntityListeners(AuditingEntityListener.class)
+public class ModulePO extends AbstractAuditingWithVersionPo {
 
     @Column(name = "name")
     private String name;
@@ -34,13 +33,13 @@ public class ModulePO {
     @Column(name = "status")
     private Integer status;
 
+    @Column(name = "permission_resources_code")
+    private String permissionResourcesCode;
+
     @Column(name = "options")
     private String options;
 
     @Column(name = "rank_index")
     private Integer rankIndex;
 
-    @Version
-    @Column(name = "version")
-    private Integer version;
 }

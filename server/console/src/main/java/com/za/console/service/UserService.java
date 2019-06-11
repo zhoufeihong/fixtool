@@ -31,7 +31,11 @@ import java.util.List;
 public class UserService {
 
     // 过期时间8分钟
-    private static final long EXPIRE_TIME = 10 * 60 * 1000;
+    private static final long EXPIRE_TIME = 10L * 60 * 1000;
+
+    private static final String NOT_FIND_USER = "没有找到用户信息";
+
+    private static final String INVALID_TOKEN = "无效秘钥";
 
     @Autowired
     UserReponsitory userReponsitory;
@@ -52,11 +56,9 @@ public class UserService {
         UserDTO userResult = BeanExtUtils.copyProperties(userPO, UserDTO.class);
         userResult.setRoles(BeanExtUtils.copyPropertiesOfList(userPO.getRoles(), RoleDTO.class));
         if (userPO.getRoles() != null) {
-            userPO.getRoles().stream().forEach(f ->
-                    {
-                        BeanExtUtils.copyPropertiesOfList(f.getRoleAuths(), RoleAuthDTO.class);
-                    }
-            );
+            for (RolePO f : userPO.getRoles()) {
+                BeanExtUtils.copyPropertiesOfList(f.getRoleAuth(), RoleAuthDTO.class);
+            }
         }
         return ResultDTO.success(userResult);
     }
@@ -94,7 +96,7 @@ public class UserService {
     public ResultDTO updateRole(UserDTO user) {
         AssertExtUtils.notEmpty(user, "user");
         UserPO userPo = userReponsitory.findById(user.getId()).orElse(null);
-        AssertExtUtils.checkNotNull(userPo, "没有找到用户信息.");
+        AssertExtUtils.checkNotNull(userPo, NOT_FIND_USER);
         userPo.setRoles(BeanExtUtils.copyPropertiesOfList(user.getRoles(), RolePO.class));
         userReponsitory.save(userPo);
         return ResultDTO.success();
@@ -115,7 +117,7 @@ public class UserService {
         userPO.setStatus(userDto.getStatus());
         userPO.setName(userDto.getName());
         userReponsitory.saveAndFlush(userPO);
-        return ResultDTO.success(BeanExtUtils.copyProperties(userPO,UserDTO.class));
+        return ResultDTO.success(BeanExtUtils.copyProperties(userPO, UserDTO.class));
     }
 
     /**
@@ -158,7 +160,7 @@ public class UserService {
         }
         //验证密码
         if (PasswordUtils.verify(password, userPO.getMfaSecret(), userPO.getPassword())) {
-            return ResultDTO.success(JWTUtils.sign(userName, userPO.getPassword(), EXPIRE_TIME));
+            return ResultDTO.success(JWTUtils.sign(userName, userPO.getId(), userPO.getPassword(), EXPIRE_TIME));
         }
         return ResultDTO.error("请输入正确的用户名或密码.");
     }
@@ -172,13 +174,13 @@ public class UserService {
     public ResultDTO<UserDTO> getUserInfo(String accessToken) {
         String userName = JWTUtils.getUsername(accessToken);
         if (StringUtils.isBlank(userName)) {
-            return ResultDTO.error("无效秘钥.");
+            return ResultDTO.error(INVALID_TOKEN);
         }
         UserPO userPO = userReponsitory.findByUserName(userName);
         try {
             JWTUtils.verify(accessToken, userName, userPO.getPassword());
         } catch (Exception ex) {
-            return ResultDTO.error("无效秘钥.");
+            return ResultDTO.error(INVALID_TOKEN);
         }
         return ResultDTO.success(BeanExtUtils.copyProperties(userPO, UserDTO.class));
     }
@@ -200,7 +202,7 @@ public class UserService {
         } catch (Exception ex) {
             return ResultDTO.error("刷新失败.");
         }
-        return ResultDTO.success(JWTUtils.sign(userName, userPO.getPassword(), EXPIRE_TIME));
+        return ResultDTO.success(JWTUtils.sign(userName, userPO.getId(), userPO.getPassword(), EXPIRE_TIME));
     }
 
     /**
@@ -220,4 +222,12 @@ public class UserService {
         return ResultDTO.success();
     }
 
+    public ResultDTO<Long> getUserId(String accessToken) {
+        try {
+            Long userId = JWTUtils.getUserId(accessToken);
+            return ResultDTO.success(userId);
+        } catch (Exception ex) {
+            return ResultDTO.error();
+        }
+    }
 }

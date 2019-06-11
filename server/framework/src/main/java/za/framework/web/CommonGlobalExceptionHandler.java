@@ -20,13 +20,13 @@ public class CommonGlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     @ResponseBody
     public ResultDTO<String> exceptionHandler(HttpServletRequest request, Exception exception) throws Exception {
-        return handleExceptionInfo(ResultDTO.EXCEPTION, exception);
+        return handleExceptionInfo(ResultDTO.EXCEPTION_CODE, exception);
     }
 
     @ExceptionHandler(BusErroException.class)
     @ResponseBody
     public ResultDTO<String> exceptionHandler(HttpServletRequest request, BusErroException exception) throws Exception {
-        return handleExceptionInfo(ResultDTO.EXCEPTION, exception);
+        return handleExceptionInfo(ResultDTO.EXCEPTION_CODE, exception);
     }
 
     /**
@@ -40,7 +40,7 @@ public class CommonGlobalExceptionHandler {
     @ExceptionHandler(OptimisticLockingFailureException.class)
     @ResponseBody
     public ResultDTO<String> exceptionHandler(HttpServletRequest request, OptimisticLockingFailureException exception) throws Exception {
-        return handleErroInfo(ResultDTO.ERROR, OPTIMISTIC_LOCKING_FAILURE_INFO, exception);
+        return handleErroInfo(ResultDTO.ERROR_CODE, OPTIMISTIC_LOCKING_FAILURE_INFO, exception);
     }
 
     /**
@@ -54,7 +54,7 @@ public class CommonGlobalExceptionHandler {
     @ExceptionHandler(BusException.class)
     @ResponseBody
     public ResultDTO<String> exceptionHandler(HttpServletRequest request, BusException exception) throws Exception {
-        return handleErroInfo(ResultDTO.ERROR, exception.getShowInfo(), exception);
+        return handleErroInfo(ResultDTO.ERROR_CODE, exception.getShowInfo(), exception);
     }
 
     /**
@@ -66,11 +66,22 @@ public class CommonGlobalExceptionHandler {
      * @return
      */
     private ResultDTO<String> handleErroInfo(int code, String message, Exception exception) {
-        log.debug("message:" + message + "," + exception.getStackTrace().toString());
+        log.debug("message:" + message + "," + getStackMsg(exception));
         ResultDTO<String> resultDTO = new ResultDTO<>();
         resultDTO.setCode(code);
         resultDTO.setMsg(message);
         return resultDTO;
+    }
+
+    private static String getStackMsg(Throwable e) {
+
+        StringBuffer sb = new StringBuffer();
+        StackTraceElement[] stackArray = e.getStackTrace();
+        for (int i = 0; i < stackArray.length; i++) {
+            StackTraceElement element = stackArray[i];
+            sb.append(element.toString() + "\n");
+        }
+        return sb.toString();
     }
 
     /**
@@ -81,7 +92,7 @@ public class CommonGlobalExceptionHandler {
      * @return
      */
     private ResultDTO<String> handleExceptionInfo(int code, Exception exception) {
-        log.error("message:" + exception.getMessage() + "," + exception.getStackTrace().toString());
+        log.error("message:" + exception.getMessage() + "," + getStackMsg(exception));
         ResultDTO<String> resultDTO = new ResultDTO<>();
         resultDTO.setCode(code);
         resultDTO.setMsg(SYSTEM_ERRO_INFO);

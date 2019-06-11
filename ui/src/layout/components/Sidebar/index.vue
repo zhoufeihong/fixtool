@@ -19,6 +19,7 @@
 </template>
 
 <script>
+import defaultSettings from '@/settings'
 import { mapGetters } from 'vuex'
 import Logo from './Logo'
 import SidebarItem from './SidebarItem'
@@ -43,7 +44,7 @@ export default {
       return path
     },
     showLogo() {
-      return this.$store.state.settings.sidebarLogo
+      return defaultSettings.showLogo
     },
     variables() {
       return variables

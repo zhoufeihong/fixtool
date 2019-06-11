@@ -9,23 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.buffer.DataBuffer;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
-import org.springframework.web.cors.reactive.CorsUtils;
-import org.springframework.web.server.ServerWebExchange;
-import org.springframework.web.server.WebFilter;
-import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.List;
-
-import static org.springframework.web.cors.CorsConfiguration.ALL;
 
 @Log4j2
 @Component
@@ -53,7 +45,7 @@ public class AuthenticationFilter {
             } else {
                 try {
                     ResultDTO resultDTO = userService.getUserInfo(accessTokens.get(0));
-                    if (resultDTO.getCode() != ResultDTO.SUCCESS) {
+                    if (resultDTO.getCode() != ResultDTO.SUCCESS_CODE) {
                         return response401(response, HttpStatus.NON_AUTHORITATIVE_INFORMATION, "权限已经失效，请重新登录！");
                     }
                     LinkedHashMap linkedHashMap = (LinkedHashMap) resultDTO.getData();
@@ -75,9 +67,6 @@ public class AuthenticationFilter {
 
     private boolean needFilter(String path) {
         if (path.equals("/user/getToken") || path.equals("/user/refreshToken")) {
-            return false;
-        }
-        if (path.startsWith("/actuator/")) {
             return false;
         }
         return true;

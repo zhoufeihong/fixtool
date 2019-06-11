@@ -8,18 +8,18 @@ public class ResultDTO<T> implements Serializable {
     private int code;
     private String specificCode;
     private String msg;
-    private T data;
 
-    public final static int SUCCESS = Constant.Result.SUCESS;
-    public final static int ERROR = Constant.Result.ERRO;
-    public final static int EXCEPTION = Constant.Result.EXCEPTION;
+    private transient T data;
+
+    public static final int SUCCESS_CODE = Constant.Result.SUCESS;
+    public static final int ERROR_CODE = Constant.Result.ERRO;
+    public static final int EXCEPTION_CODE = Constant.Result.EXCEPTION;
 
     public final int getCode() {
         return this.code;
     }
 
-    public final String getSpecificCode()
-    {
+    public final String getSpecificCode() {
         return this.specificCode;
     }
 
@@ -49,7 +49,7 @@ public class ResultDTO<T> implements Serializable {
 
     public static <T> ResultDTO<T> success(String msg, T data) {
         ResultDTO<T> result = new ResultDTO<>();
-        result.setCode(SUCCESS);
+        result.setCode(SUCCESS_CODE);
         result.setData(data);
         if (msg == null) {
             msg = "执行成功";
@@ -73,19 +73,19 @@ public class ResultDTO<T> implements Serializable {
 
     public static <T> ResultDTO<T> exception(String msg) {
         ResultDTO<T> result = new ResultDTO<>();
-        result.setCode(EXCEPTION);
+        result.setCode(EXCEPTION_CODE);
         result.setMsg(msg == null ? "执行失败！" : msg);
         return result;
     }
 
     public static <T> ResultDTO<T> error(String msg) {
         ResultDTO<T> result = new ResultDTO<>();
-        result.setCode(ERROR);
+        result.setCode(ERROR_CODE);
         result.setMsg(msg == null ? "执行失败！" : msg);
         return result;
     }
 
-    public static <T> ResultDTO<T> error(String msg, Object... args){
+    public static <T> ResultDTO<T> error(String msg, Object... args) {
         return error(String.format(msg, args));
     }
 

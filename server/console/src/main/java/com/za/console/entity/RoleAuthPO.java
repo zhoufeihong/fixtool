@@ -1,7 +1,10 @@
 package com.za.console.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.za.console.entity.base.AbstractAuditingWithVersionPo;
 import lombok.Data;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
@@ -9,24 +12,14 @@ import javax.persistence.*;
 @Entity
 @Table(name = "T_Role_Auth")
 @JsonIgnoreProperties(value = { "hibernateLazyInitializer"})
-public class RoleAuthPO {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private Long id;
+@SQLDelete(sql = "update T_Role_Auth set deleted = 1 where id = ? and version = ?")
+@Where(clause = "deleted = 0")
+public class RoleAuthPO extends AbstractAuditingWithVersionPo {
 
     @Column(name = "role_id")
     private Long roleId;
 
-    @Column(name = "module_id")
-    private Long moduleId;
-
-    @Column(name = "permission")
-    private String permission;
-
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinColumn(name = "module_Id",referencedColumnName = "id")
-    private ModulePO module;
+    @Column(name = "permission_resources_code")
+    private String permissionResourcesCode;
 
 }

@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: 'Vue项目',
+  title: 'Vue 项目',
 
   /**
    * @type {boolean} true | false
@@ -12,5 +12,6 @@ module.exports = {
    * @type {boolean} true | false
    * @description Whether show the logo in sidebar
    */
-  sidebarLogo: false
+  sidebarLogo: false,
+  showLogo: true
 }

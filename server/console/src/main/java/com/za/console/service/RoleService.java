@@ -106,9 +106,9 @@ public class RoleService {
             return ResultDTO.error("没有找到要授权的角色信息.");
         }
         //
-        rolePO.getRoleAuths().clear();
+        rolePO.getRoleAuth().clear();
         //重新添加权限信息
-        rolePO.setRoleAuths(BeanExtUtils.copyPropertiesOfList(roleDTO.getRoleAuths(), RoleAuthPO.class));
+        rolePO.setRoleAuth(BeanExtUtils.copyPropertiesOfList(roleDTO.getRoleAuths(), RoleAuthPO.class));
         roleReponsitory.saveAndFlush(rolePO);
         return ResultDTO.success();
     }

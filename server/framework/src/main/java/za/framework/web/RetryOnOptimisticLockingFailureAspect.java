@@ -27,7 +27,7 @@ public class RetryOnOptimisticLockingFailureAspect {
                     log.error(ex.toString());
                     throw ex;
                 } else {
-                    log.error("doConcurrentOperation:" + pjp.getSignature().getName() + pjp.getArgs());
+                    log.error("doConcurrentOperation:" + pjp.getSignature().getName());
                     //will try recovery
                 }
             }

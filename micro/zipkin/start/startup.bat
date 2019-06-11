@@ -11,7 +11,7 @@
  goto start
 
  :end
- @echo 没有找到启动文件，按任意键退出
+ @echo 没有找到启动文件,请参考README.md,下载启动文件
  pause
  exit
 

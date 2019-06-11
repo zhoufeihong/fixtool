@@ -127,7 +127,7 @@ public class ModuleService {
         if (moduleReponsitory.countByParentId(moduleDTO.getId()) > 0) {
             modulePO.setIsLeaf(0);
         }
-        if (moduleDTO.getParentId() != MenuDTO.ROOT_ID) {
+        if (moduleDTO.getParentId().equals(MenuDTO.ROOT_ID)) {
             ModulePO parentModulePO = moduleReponsitory.findById(moduleDTO.getId()).orElse(null);
             if (parentModulePO != null) {
                 parentModulePO.setIsLeaf(0);

@@ -33,7 +33,7 @@ public class RedisEhcacheProperties {
     }
 
     @Data
-    public class Redis {
+    public static class Redis {
 
         /** 全局过期时间，单位毫秒，默认不过期*/
         private long defaultExpiration = 0;
@@ -47,7 +47,7 @@ public class RedisEhcacheProperties {
     }
 
     @Data
-    public class Ehcache {
+    public static class Ehcache {
 
         /** 配置文件路径*/
         private Resource config;

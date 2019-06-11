@@ -1,8 +1,11 @@
 package com.za.console.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.za.console.entity.base.AbstractAuditingWithVersionPo;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -12,13 +15,9 @@ import java.util.Set;
 @Entity
 @Table(name = "t_user")
 @JsonIgnoreProperties(value = { "hibernateLazyInitializer"})
-public class UserPO {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    @Basic
-    private Long id;
+@SQLDelete(sql = "update t_user set deleted = 1 where id = ? and version = ?")
+@Where(clause = "deleted = 0")
+public class UserPO extends AbstractAuditingWithVersionPo {
 
     @Column(name = "userName")
     @Basic

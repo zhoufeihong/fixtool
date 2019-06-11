@@ -33,7 +33,7 @@ public class RoleServiceTests {
     @Rollback(false)
     public void addRoleTest() {
         RoleDTO roleDTO = new RoleDTO();
-        roleDTO.setName("a");
+        roleDTO.setName("AbstractAuditingPo");
         roleDTO.setCode("aa");
         roleDTO.setStatus(1);
         Assert.isTrue(roleService.addRole(roleDTO).getCode() == 0, "角色添加测试失败");
