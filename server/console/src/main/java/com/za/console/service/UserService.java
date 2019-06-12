@@ -23,7 +23,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.criteria.Predicate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 @Service
 @CacheConfig(cacheNames = "user")
@@ -94,7 +97,9 @@ public class UserService {
     public ResultDTO updateRole(UserDTO user) {
         AssertExtUtils.notEmpty(user, "user");
         UserPO userPo = userReponsitory.findById(user.getId()).orElse(null);
-        AssertExtUtils.checkNotNull(userPo, NOT_FIND_USER);
+        if (userPo == null) {
+            return ResultDTO.error(NOT_FIND_USER);
+        }
         Set<RolePO> rolePOS = new LinkedHashSet<>();
         if (user.getRoles() != null) {
             for (RoleDTO roleDTO : user.getRoles()) {
@@ -120,7 +125,9 @@ public class UserService {
     public ResultDTO updateUser(UserDTO userDto) {
         AssertExtUtils.notEmpty(userDto, "userDto");
         UserPO userPO = userReponsitory.findById(userDto.getId()).orElse(null);
-        AssertExtUtils.checkNotNull(userDto, "没有找到用户信息.");
+        if (userPO == null) {
+            return ResultDTO.error("没有找到用户信息.");
+        }
         userPO.setAvatar(userDto.getAvatar());
         userPO.setStatus(userDto.getStatus());
         userPO.setName(userDto.getName());
@@ -140,7 +147,9 @@ public class UserService {
             return ResultDTO.error("密码不能为空");
         }
         UserPO userPO = userReponsitory.findById(userDto.getId()).orElse(null);
-        AssertExtUtils.checkNotNull(userDto, "没有找到用户信息.");
+        if (userPO == null) {
+            return ResultDTO.error("没有找到用户信息.");
+        }
         if (StringUtils.isNotBlank(userDto.getPassword())) {
             userPO.setPassword(PasswordUtils.encrypt(userDto.getPassword(), userDto.getMfaSecret()));
         }

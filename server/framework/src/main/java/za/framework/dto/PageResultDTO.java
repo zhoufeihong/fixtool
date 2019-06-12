@@ -6,8 +6,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.domain.Page;
 
+import javax.validation.constraints.Max;
+import java.util.List;
+
 @Data
-@EqualsAndHashCode(callSuper=true)
+@EqualsAndHashCode(callSuper = true)
 public class PageResultDTO<T> extends ResultDTO<T> {
 
     private Integer total;
@@ -43,15 +46,15 @@ public class PageResultDTO<T> extends ResultDTO<T> {
     /**
      * @param page
      * @param targetClass
-     * @param <T>
+     * @param
      * @return
      */
-    public static <T> PageResultDTO pageSuccess(Page<?> page, Class<T> targetClass) {
-        PageResultDTO pageResultDTO = pageSuccess("", BeanExtUtils.copyPropertiesOfList(page.getContent(), targetClass), page.getTotalPages());
-        return setElsePageResult(page,pageResultDTO);
+    public static <I, T> PageResultDTO<List<T>> pageSuccess(Page<I> page, Class<T> targetClass) {
+        PageResultDTO<List<T>> pageResultDTO = pageSuccess("", BeanExtUtils.copyPropertiesOfList(page.getContent(), targetClass), page.getTotalPages());
+        return setElsePageResult(page, pageResultDTO);
     }
 
-    private static PageResultDTO<?> setElsePageResult(Page<?> page, PageResultDTO<?> result) {
+    private static <T> PageResultDTO<T> setElsePageResult(Page<?> page, PageResultDTO<T> result) {
         result.total = (int) page.getTotalElements();
         return result;
     }

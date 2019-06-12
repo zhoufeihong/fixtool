@@ -1,6 +1,5 @@
 package com.za.gateway.hystrix;
 
-import com.za.common.constant.Constant;
 import com.za.common.dto.ResultDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestMapping;

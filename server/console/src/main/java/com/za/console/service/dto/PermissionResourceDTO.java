@@ -1,12 +1,10 @@
 package com.za.console.service.dto;
 
-import com.za.console.service.dto.base.CreateAndUpdateTime;
+import com.za.console.service.dto.base.CreateAndUpdateTimeDTO;
 import lombok.Data;
 
-import java.util.Date;
-
 @Data
-public class PermissionResourceDTO extends CreateAndUpdateTime {
+public class PermissionResourceDTO extends CreateAndUpdateTimeDTO {
 
     private Long id;
 

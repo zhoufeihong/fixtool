@@ -49,7 +49,7 @@ public class UserAuditorBean implements AuditorAware<String> {
                 String token = request.getHeader("Authorization");
                 if (StringUtils.isNotBlank(token)) {
                     ResultDTO<Long> result = userService.getUserId(token);
-                    if (result.getCode() == ResultDTO.SUCCESS_CODE) {
+                    if (result.getSuccess()) {
                         return Optional.of(result.getData().toString());
                     }
                 }

@@ -56,12 +56,12 @@ public class ModuleService {
      * @return
      */
     public ResultDTO<List<ModuleDTO>> listModuleDTO(String name) {
-        Example example = getModuleExample(name);
+        Example<ModulePO> example = getModuleExample(name);
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         return ResultDTO.success(BeanExtUtils.copyPropertiesOfList(moduleReponsitory.findAll(example, sort), ModuleDTO.class));
     }
 
-    private Example getModuleExample(String name) {
+    private Example<ModulePO> getModuleExample(String name) {
         ModulePO modulePO = new ModulePO();
         modulePO.setName(name);
         ExampleMatcher exampleMatcher = ExampleMatcher.matching()
@@ -75,7 +75,7 @@ public class ModuleService {
      * @return
      */
     public PageResultDTO<List<ModuleDTO>> listModuleDTO(String name, PageRequestDTO pageRequestDTO) {
-        Example example = getModuleExample(name);
+        Example<ModulePO> example = getModuleExample(name);
         return PageResultDTO.pageSuccess(moduleReponsitory.findAll(example, pageRequestDTO.toPageRequest()), ModuleDTO.class);
     }
 

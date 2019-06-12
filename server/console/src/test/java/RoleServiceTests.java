@@ -1,19 +1,12 @@
 import com.za.common.dto.ResultDTO;
-import com.za.common.utils.BeanExtUtils;
-import com.za.console.ConsoleApplication;
-import com.za.console.entity.PermissionResourcePO;
 import com.za.console.service.RoleService;
 import com.za.console.service.dto.PermissionResourceDTO;
-import com.za.console.service.dto.RoleAuthDTO;
 import com.za.console.service.dto.RoleDTO;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.Assert;
 
@@ -23,10 +16,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-@RunWith(SpringRunner.class)
 @EnableTransactionManagement
-@SpringBootTest(classes = ConsoleApplication.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class RoleServiceTests {
+public class RoleServiceTests extends AbstractConsoleTest {
 
     @Autowired
     RoleService roleService;
@@ -39,7 +30,7 @@ public class RoleServiceTests {
         roleDTO.setName("AbstractAuditingPo");
         roleDTO.setCode("aa");
         roleDTO.setStatus(1);
-        Assert.isTrue(roleService.addRole(roleDTO).getCode() == 1, "角色添加测试失败");
+        Assert.isTrue(roleService.addRole(roleDTO).getSuccess(), "角色添加测试失败");
     }
 
     @Test
@@ -47,10 +38,10 @@ public class RoleServiceTests {
     @Rollback(false)
     public void removeRoleTest() {
         ResultDTO<List<RoleDTO>> result = roleService.listRole("AbstractAuditingPo");
-        Assert.isTrue(result.getCode() == 1,"roleService.listRole失败");
-        if(result.getData().size() > 0) {
+        Assert.isTrue(result.getSuccess(), "roleService.listRole失败");
+        if (result.getData().size() > 0) {
             RoleDTO roleDTO = result.getData().get(0);
-            Assert.isTrue(roleService.removeRole(roleDTO).getCode() == 1, "角色删除失败");
+            Assert.isTrue(roleService.removeRole(roleDTO).getSuccess(), "角色删除失败");
         }
     }
 
@@ -68,8 +59,8 @@ public class RoleServiceTests {
     @Rollback(false)
     public void updateRoleTest() {
         ResultDTO<List<RoleDTO>> result = roleService.listRole("代理");
-        Assert.isTrue(result.getCode() == 1,"roleService.listRole失败");
-        if(result.getData().size() > 0) {
+        Assert.isTrue(result.getSuccess(), "roleService.listRole失败");
+        if (result.getData().size() > 0) {
             RoleDTO role = result.getData().get(0);
             Random rd = new Random();
             role.setName(role.getName() + rd.nextInt(1000));
@@ -92,6 +83,13 @@ public class RoleServiceTests {
         permissionResourceDTOS.add(permissionResourceDTO);
         role.setPermissionResources(permissionResourceDTOS);
         roleService.grantAuthorization(role);
+    }
+
+    @Test
+    @Transactional
+    public void queryPermissionResourceTest() {
+        ResultDTO<List<PermissionResourceDTO>> resultDTO = roleService.queryPermissionResource(1L);
+        org.junit.Assert.assertTrue(resultDTO.getSuccess());
     }
 
     @Before

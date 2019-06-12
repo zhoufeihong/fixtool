@@ -17,6 +17,8 @@ import java.util.List;
 @Service
 public class PermissionResourceService {
 
+    private static final String INPUT_DTO_NAME = "permissionResourceDTO";
+
     @Autowired
     PermissionResourceReponsitory permissionResourceReponsitory;
 
@@ -27,10 +29,10 @@ public class PermissionResourceService {
      * @return
      */
     public ResultDTO<PermissionResourceDTO> addPermissionResource(PermissionResourceDTO permissionResourceDTO) {
-        AssertExtUtils.notEmpty(permissionResourceDTO, "permissionResourceDTO");
-        PermissionResourcePO rolePO = BeanExtUtils.copyProperties(permissionResourceDTO, PermissionResourcePO.class);
-        rolePO = permissionResourceReponsitory.save(rolePO);
-        return ResultDTO.success(BeanExtUtils.copyProperties(rolePO, PermissionResourceDTO.class));
+        AssertExtUtils.notEmpty(permissionResourceDTO, INPUT_DTO_NAME);
+        PermissionResourcePO permissionResourcePO = BeanExtUtils.copyProperties(permissionResourceDTO, PermissionResourcePO.class);
+        permissionResourcePO = permissionResourceReponsitory.save(permissionResourcePO);
+        return ResultDTO.success(BeanExtUtils.copyProperties(permissionResourcePO, PermissionResourceDTO.class));
     }
 
     /**
@@ -40,9 +42,9 @@ public class PermissionResourceService {
      * @return
      */
     public ResultDTO removePermissionResource(PermissionResourceDTO permissionResourceDTO) {
-        AssertExtUtils.notEmpty(permissionResourceDTO, "permissionResourceDTO");
-        PermissionResourcePO rolePO = permissionResourceReponsitory.findById(permissionResourceDTO.getId()).orElse(null);
-        if (rolePO == null) {
+        AssertExtUtils.notEmpty(permissionResourceDTO, INPUT_DTO_NAME);
+        PermissionResourcePO permissionResourcePO = permissionResourceReponsitory.findById(permissionResourceDTO.getId()).orElse(null);
+        if (permissionResourcePO == null) {
             return ResultDTO.error("没有找到需要删除的权限资源项信息.");
         }
         permissionResourceReponsitory.deleteById(permissionResourceDTO.getId());
@@ -78,29 +80,20 @@ public class PermissionResourceService {
     /**
      * 更新权限资源项信息
      *
-     * @param roleDTO
+     * @param permissionResourceDTO
      * @return
      */
-    public ResultDTO updatePermissionResource(PermissionResourceDTO roleDTO) {
-        AssertExtUtils.notEmpty(roleDTO, "roleDTO");
-        PermissionResourcePO permissionResourcePO = permissionResourceReponsitory.findById(roleDTO.getId()).orElse(null);
+    public ResultDTO updatePermissionResource(PermissionResourceDTO permissionResourceDTO) {
+        AssertExtUtils.notEmpty(permissionResourceDTO, INPUT_DTO_NAME);
+        PermissionResourcePO permissionResourcePO = permissionResourceReponsitory.findById(permissionResourceDTO.getId()).orElse(null);
         if (permissionResourcePO == null) {
             return ResultDTO.error("没有找到更新的权限资源项信息.");
         }
-        permissionResourcePO.setName(roleDTO.getName());
-        permissionResourcePO.setCode(roleDTO.getCode());
-        permissionResourcePO.setStatus(roleDTO.getStatus());
+        permissionResourcePO.setName(permissionResourceDTO.getName());
+        permissionResourcePO.setCode(permissionResourceDTO.getCode());
+        permissionResourcePO.setStatus(permissionResourceDTO.getStatus());
         permissionResourceReponsitory.saveAndFlush(permissionResourcePO);
         return ResultDTO.success();
     }
 
-    /**
-     *  根据角色查询权限资源项
-     * @param roleId
-     * @return
-     */
-    public ResultDTO<List<PermissionResourceDTO>> queryPermissionResource(Long roleId) {
-        List<PermissionResourcePO> permissionResourcePOList = permissionResourceReponsitory.queryPermissionResource(roleId);
-        return ResultDTO.success(BeanExtUtils.copyPropertiesOfList(permissionResourcePOList, PermissionResourceDTO.class));
-    }
 }

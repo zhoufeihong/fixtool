@@ -2,6 +2,7 @@ package com.za.console.controller;
 
 import com.za.common.dto.ResultDTO;
 import com.za.console.service.RoleService;
+import com.za.console.service.dto.PermissionResourceDTO;
 import com.za.console.service.dto.RoleDTO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -54,6 +55,18 @@ public class RoleController {
     @PostMapping("/grantAuthorization")
     public ResultDTO grantAuthorization(@RequestBody RoleDTO roleDTO) {
         return roleService.grantAuthorization(roleDTO);
+    }
+
+    /**
+     * 根据角色Id查询权限资源项
+     *
+     * @param roleId
+     * @return
+     */
+    @ApiOperation(value = "根据角色查询权限资源项")
+    @PostMapping("/queryPermissionResource")
+    public ResultDTO<List<PermissionResourceDTO>> queryPermissionResource(Long roleId) {
+        return roleService.queryPermissionResource(roleId);
     }
 
 }

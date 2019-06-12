@@ -1,15 +1,18 @@
 package com.za.console.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.za.console.service.dto.base.CreateAndUpdateTime;
+import com.za.console.service.dto.base.CreateAndUpdateTimeDTO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.Date;
 import java.util.Set;
 
 @Data
-public class UserDTO extends CreateAndUpdateTime {
+public class UserDTO extends CreateAndUpdateTimeDTO {
+
+    public static UserDTO empty(){
+        return null;
+    }
 
     @ApiModelProperty(value = "用户id", example = "1")
     private Long id;

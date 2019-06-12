@@ -25,10 +25,9 @@ public class AssertExtUtils {
      * @param object
      * @param message
      */
-    public static void checkNotNull(@Nullable  Object object, String message) {
+    public static void checkNotNull(@Nullable Object object, String message) {
         if (object == null) {
             throw new BusErroException("0", message, new NullPointerException(message));
         }
     }
-
 }

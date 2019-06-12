@@ -2,6 +2,7 @@ package com.za.console.service;
 
 import com.za.common.dto.ResultDTO;
 import com.za.common.utils.AssertExtUtils;
+import com.za.common.utils.BeanExtUtils;
 import com.za.console.entity.PermissionResourcePO;
 import com.za.console.entity.RoleAuthPO;
 import com.za.console.entity.RolePO;
@@ -86,13 +87,14 @@ public class RoleService {
         rolePO.setName(name);
         ExampleMatcher exampleMatcher = ExampleMatcher.matching()
                 .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.contains());
-        Example example = Example.of(rolePO, exampleMatcher);
+        Example<RolePO> example = Example.of(rolePO, exampleMatcher);
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         return ResultDTO.success(copyPropertiesOfList(roleReponsitory.findAll(example, sort), RoleDTO.class));
     }
 
     /**
-     *  获取角色信息(包含权限信息)
+     * 获取角色信息(包含权限信息)
+     *
      * @param roleId
      * @return
      */
@@ -161,4 +163,17 @@ public class RoleService {
         roleReponsitory.flush();
         return ResultDTO.success();
     }
+
+    /**
+     * 根据角色查询权限资源项
+     *
+     * @param roleId
+     * @return
+     */
+    public ResultDTO<List<PermissionResourceDTO>> queryPermissionResource(Long roleId) {
+        List<PermissionResourcePO> permissionResourcePOList = permissionResourceReponsitory.queryPermissionResource(roleId);
+        List<PermissionResourceDTO> result = BeanExtUtils.copyPropertiesOfList(permissionResourcePOList, PermissionResourceDTO.class);
+        return ResultDTO.success(result);
+    }
+
 }

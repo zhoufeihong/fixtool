@@ -32,7 +32,7 @@ public class BeanExtUtils extends BeanUtils {
      * @param <T>
      * @return 目标对象集合实例
      */
-    public static <T> List<T> copyPropertiesOfList(List<?> sourceList, Class<T> targetClass) {
+    public static <I, T> List<T> copyPropertiesOfList(List<I> sourceList, Class<T> targetClass) {
         if (CollectionUtils.isEmpty(sourceList)) {
             return Collections.emptyList();
         }
@@ -49,9 +49,9 @@ public class BeanExtUtils extends BeanUtils {
      * @param <T>
      * @return 目标对象集合实例
      */
-    public static <T> Set<T> copyPropertiesOfList(Set<?> sourceList, Class<T> targetClass) {
+    public static <I, T> Set<T> copyPropertiesOfList(Set<I> sourceList, Class<T> targetClass) {
         if (CollectionUtils.isEmpty(sourceList)) {
-            return Collections.EMPTY_SET;
+            return Collections.emptySet();
         }
         Set<T> resultSet = new LinkedHashSet<>(sourceList.size());
         addResult(sourceList, targetClass, resultSet);

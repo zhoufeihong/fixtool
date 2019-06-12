@@ -4,7 +4,7 @@ import javax.persistence.MappedSuperclass;
 import java.util.Date;
 
 @MappedSuperclass
-public class CreateAndUpdateTime {
+public class CreateAndUpdateTimeDTO {
 
     private Date createTime;
 

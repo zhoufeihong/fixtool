@@ -1,13 +1,12 @@
 package com.za.console.service.dto;
 
-import com.za.console.service.dto.base.CreateAndUpdateTime;
+import com.za.console.service.dto.base.CreateAndUpdateTimeDTO;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.util.Date;
 
 @Data
-public class ModuleDTO extends CreateAndUpdateTime implements Serializable {
+public class ModuleDTO extends CreateAndUpdateTimeDTO implements Serializable {
     private Long id;
     private String name;
     private String url;

@@ -45,7 +45,7 @@ public class AuthenticationFilter {
             } else {
                 try {
                     ResultDTO resultDTO = userService.getUserInfo(accessTokens.get(0));
-                    if (resultDTO.getCode() != ResultDTO.SUCCESS_CODE) {
+                    if (!resultDTO.getSuccess()) {
                         return response401(response, HttpStatus.NON_AUTHORITATIVE_INFORMATION, "权限已经失效，请重新登录！");
                     }
                     LinkedHashMap linkedHashMap = (LinkedHashMap) resultDTO.getData();

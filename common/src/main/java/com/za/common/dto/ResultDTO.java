@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 public class ResultDTO<T> implements Serializable {
 
-    private static final  long  serialVersionUID = 1234567L;
+    private static final long serialVersionUID = 1234567L;
 
     private int code;
     private String specificCode;
@@ -22,16 +22,20 @@ public class ResultDTO<T> implements Serializable {
         return this.code;
     }
 
+    public final void setCode(int var1) {
+        this.code = var1;
+    }
+
+    public final boolean getSuccess() {
+        return this.code == SUCCESS_CODE;
+    }
+
     public final String getSpecificCode() {
         return this.specificCode;
     }
 
     public final void setSpecificCode(String var1) {
         this.specificCode = var1;
-    }
-
-    public final void setCode(int var1) {
-        this.code = var1;
     }
 
     public final String getMsg() {
@@ -70,7 +74,7 @@ public class ResultDTO<T> implements Serializable {
         return ResultDTO.success(null, data);
     }
 
-    public static <T> ResultDTO<T> success() {
+    public static ResultDTO success() {
         return ResultDTO.success(null, null);
     }
 
@@ -81,18 +85,18 @@ public class ResultDTO<T> implements Serializable {
         return result;
     }
 
-    public static <T> ResultDTO<T> error(String msg) {
-        ResultDTO<T> result = new ResultDTO<>();
+    public static ResultDTO error(String msg) {
+        ResultDTO result = new ResultDTO<>();
         result.setCode(ERROR_CODE);
         result.setMsg(msg == null ? "执行失败！" : msg);
         return result;
     }
 
-    public static <T> ResultDTO<T> error(String msg, Object... args) {
+    public static ResultDTO error(String msg, Object... args) {
         return error(String.format(msg, args));
     }
 
-    public static <T> ResultDTO<T> error() {
+    public static ResultDTO error() {
         return ResultDTO.error("");
     }
 
