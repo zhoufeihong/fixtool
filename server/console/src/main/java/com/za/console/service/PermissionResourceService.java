@@ -11,6 +11,8 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import za.framework.dto.PageRequestDTO;
+import za.framework.dto.PageResultDTO;
 
 import java.util.List;
 
@@ -72,9 +74,24 @@ public class PermissionResourceService {
         permissionResourcePO.setName(name);
         ExampleMatcher exampleMatcher = ExampleMatcher.matching()
                 .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.contains());
-        Example example = Example.of(permissionResourcePO, exampleMatcher);
-        Sort sort = new Sort(Sort.Direction.DESC, "id");
+        Example<PermissionResourcePO> example = Example.of(permissionResourcePO, exampleMatcher);
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
         return ResultDTO.success(BeanExtUtils.copyPropertiesOfList(permissionResourceReponsitory.findAll(example, sort), PermissionResourceDTO.class));
+    }
+
+    /**
+     * 查询权限资源项信息
+     *
+     * @param name
+     * @return
+     */
+    public PageResultDTO<List<PermissionResourceDTO>> listPermissionResource(String name, PageRequestDTO pageRequestDTO) {
+        PermissionResourcePO permissionResourcePO = new PermissionResourcePO();
+        permissionResourcePO.setName(name);
+        ExampleMatcher exampleMatcher = ExampleMatcher.matching()
+                .withMatcher("name", ExampleMatcher.GenericPropertyMatchers.contains());
+        Example<PermissionResourcePO> example = Example.of(permissionResourcePO, exampleMatcher);
+        return PageResultDTO.pageSuccess(permissionResourceReponsitory.findAll(example, pageRequestDTO.toPageRequest()), PermissionResourceDTO.class);
     }
 
     /**
@@ -92,6 +109,8 @@ public class PermissionResourceService {
         permissionResourcePO.setName(permissionResourceDTO.getName());
         permissionResourcePO.setCode(permissionResourceDTO.getCode());
         permissionResourcePO.setStatus(permissionResourceDTO.getStatus());
+        permissionResourcePO.setParentCode(permissionResourceDTO.getParentCode());
+        permissionResourcePO.setRemark(permissionResourceDTO.getRemark());
         permissionResourceReponsitory.saveAndFlush(permissionResourcePO);
         return ResultDTO.success();
     }

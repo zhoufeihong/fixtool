@@ -249,7 +249,6 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.dialogLoading = true
           const tempData = Object.assign({}, this.temp)
           moduleService.updateModule(tempData).then((response) => {
             if (response.code === 1) {
@@ -266,8 +265,8 @@ export default {
                 type: 'success',
                 duration: 2000
               })
+              this.dialogFormVisible = false
             }
-            this.dialogLoading = false
           }).catch(error => {
             this.$notify({
               title: '失败',

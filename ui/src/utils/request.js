@@ -18,6 +18,20 @@ const startLoading = () => {
     text: '请稍等'
   })
 }
+
+const reLogin = () => {
+  // to re-login
+  MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
+    confirmButtonText: 'Re-Login',
+    cancelButtonText: 'Cancel',
+    type: 'warning'
+  }).then(() => {
+    store.dispatch('user/resetToken').then(() => {
+      location.reload()
+    })
+  }).catch(() => {})
+}
+
 // request interceptor
 service.interceptors.request.use(
   config => {
@@ -76,16 +90,7 @@ service.interceptors.response.use(
       }
       // 50008: Illegal token; 50009: Token expired;
       if (res.specificCode === 50008 || res.specificCode === 50009) {
-        // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
-          type: 'warning'
-        }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
-            location.reload()
-          })
-        }).catch(() => {})
+        reLogin()
       }
       return res
     } else {
@@ -95,11 +100,15 @@ service.interceptors.response.use(
   error => {
     loadingInstance.close()
     console.log('err' + error) // for debug
-    Message({
-      message: error.message,
-      type: 'error',
-      duration: 5 * 1000
-    })
+    if (error.response.status === 401) {
+      reLogin()
+    } else {
+      Message({
+        message: error.message,
+        type: 'error',
+        duration: 5 * 1000
+      })
+    }
     return Promise.reject(error)
   }
 )

@@ -32,7 +32,7 @@ import java.util.Set;
 @CacheConfig(cacheNames = "user")
 public class UserService {
 
-    // 过期时间8分钟
+    // 过期时间10分钟
     private static final long EXPIRE_TIME = 10L * 60 * 1000;
 
     private static final String NOT_FIND_USER = "没有找到用户信息";
