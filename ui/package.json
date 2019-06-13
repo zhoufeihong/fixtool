@@ -1,8 +1,9 @@
 {
-  "name": "vue-admin-template",
+  "name": "permission-manager",
   "version": "4.1.0",
   "description": "A vue admin template with Element UI & axios & iconfont & permission control & lint",
   "author": "",
+  "repository": {},
   "license": "MIT",
   "scripts": {
     "dev": "vue-cli-service serve",
@@ -15,8 +16,8 @@
     "svgo": "svgo -f src/icons/svg --config=src/icons/svgo.yml"
   },
   "dependencies": {
-    "axios": "0.18.0",
-    "element-ui": "2.7.2",
+    "axios": "^0.19.0",
+    "element-ui": "2.9.1",
     "file-saver": "^2.0.1",
     "js-cookie": "2.2.0",
     "normalize.css": "7.0.0",
@@ -37,7 +38,7 @@
     "@vue/test-utils": "1.0.0-beta.29",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "10.0.1",
-    "babel-jest": "23.6.0",
+    "babel-jest": "^24.8.0",
     "chalk": "2.4.2",
     "connect": "3.6.6",
     "eslint": "5.15.3",

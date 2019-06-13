@@ -58,7 +58,6 @@
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
         <el-form-item label="ID" prop="id">
@@ -81,7 +80,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="权限">
-          <el-input v-model="temp.permissionResourcesCode" :autosize="{ minRows: 2, maxRows: 4}" placeholder="Please input" />
+          <permission-resource-cascader v-model="temp.permissionResourcesCode" />
         </el-form-item>
         <el-form-item label="排序">
           <el-input v-model="temp.rankIndex" :max="3" style="margin-top:8px;" type="number" />
@@ -96,7 +95,6 @@
         </el-button>
       </div>
     </el-dialog>
-
   </div>
 </template>
 
@@ -106,10 +104,11 @@ import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import { MessageBox } from 'element-ui'
+import PermissionResourceCascader from '@/views/components/PermissionResourceCascader'
 
 export default {
   name: 'Module',
-  components: { Pagination },
+  components: { Pagination, PermissionResourceCascader },
   directives: { waves },
   filters: {
     statusFilter(status) {
@@ -171,7 +170,7 @@ export default {
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
-        }, 1.5 * 1000)
+        }, 0.5 * 1000)
       })
     },
     getListParentOptions() {
@@ -250,6 +249,7 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          this.dialogLoading = true
           const tempData = Object.assign({}, this.temp)
           moduleService.updateModule(tempData).then((response) => {
             if (response.code === 1) {
@@ -260,7 +260,6 @@ export default {
                   break
                 }
               }
-              this.dialogFormVisible = false
               this.$notify({
                 title: '成功',
                 message: '修改成功',
@@ -268,6 +267,14 @@ export default {
                 duration: 2000
               })
             }
+            this.dialogLoading = false
+          }).catch(error => {
+            this.$notify({
+              title: '失败',
+              message: error,
+              type: 'error',
+              duration: 2000
+            })
           })
         }
       })

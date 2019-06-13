@@ -52,7 +52,7 @@ public class ModuleController {
 
     @ApiOperation("修改模块")
     @PostMapping("/updateModule")
-    public ResultDTO updateModule(@RequestBody ModuleDTO module) {
+    public ResultDTO updateModule(@RequestBody ModuleDTO module) throws Exception{
         return moduleService.updateModule(module);
     }
 

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import { MessageBox, Message, Loading } from 'element-ui'
 import store from '@/store'
 import serverConfig from '@/api/setting'
 
@@ -9,9 +9,15 @@ const excludes = [serverConfig.ConsleServerName + '/user/login', serverConfig.Co
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
   withCredentials: true, // send cookies when cross-domain requests
-  timeout: 30000 // request timeout
+  timeout: 60000 // request timeout
 })
 
+let loadingInstance
+const startLoading = () => {
+  loadingInstance = Loading.service({
+    text: '请稍等'
+  })
+}
 // request interceptor
 service.interceptors.request.use(
   config => {
@@ -32,9 +38,11 @@ service.interceptors.request.use(
       // please modify it according to the actual situation
       config.headers['Authorization'] = store.getters.token
     }
+    startLoading()
     return config
   },
   error => {
+    loadingInstance.close()
     // do something with request error
     console.log(error) // for debug
     return Promise.reject(error)
@@ -54,6 +62,7 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
+    loadingInstance.close()
     const res = response.data
     // if the custom code is not 1.
     if (res.code !== 1) {
@@ -84,6 +93,7 @@ service.interceptors.response.use(
     }
   },
   error => {
+    loadingInstance.close()
     console.log('err' + error) // for debug
     Message({
       message: error.message,

@@ -139,6 +139,7 @@ public class ModuleService {
         modulePO.setUrl(moduleDTO.getUrl());
         modulePO.setOptions(moduleDTO.getOptions());
         modulePO.setRankIndex(moduleDTO.getRankIndex());
+        modulePO.setPermissionResourcesCode(moduleDTO.getPermissionResourcesCode());
         moduleReponsitory.saveAndFlush(modulePO);
         return ResultDTO.success(BeanExtUtils.copyProperties(modulePO,ModuleDTO.class));
     }
