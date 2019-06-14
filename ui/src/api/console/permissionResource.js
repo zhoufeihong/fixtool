@@ -5,11 +5,10 @@ const controllerName = serverConfig.ConsleServerName + '/permission_resource/'
 
 class PermissionResourceService {
   listPermissionResource(listQuery) {
-    const { name, page, limit } = listQuery
     return request({
       url: controllerName + 'listPermissionResource',
       method: 'get',
-      params: { name, page, limit }
+      params: listQuery
     })
   }
   listPermissionResourceByName(name) {

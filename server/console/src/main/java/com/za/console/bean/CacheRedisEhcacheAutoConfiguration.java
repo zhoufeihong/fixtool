@@ -20,7 +20,7 @@ import za.framework.cache.RedisEhcacheProperties;
 import java.io.IOException;
 
 @Configuration
-@ConditionalOnProperty(name = "cache.use2L", havingValue = "true", matchIfMissing = false)
+@ConditionalOnProperty(name = "cache.use2L", havingValue = "true")
 @EnableConfigurationProperties(RedisEhcacheProperties.class)
 @AutoConfigureAfter(RedisAutoConfiguration.class)
 public class CacheRedisEhcacheAutoConfiguration {
