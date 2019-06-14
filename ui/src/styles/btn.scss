@@ -41,10 +41,14 @@
   @include colorBtn($yellow)
 }
 
+.filter-container > .el-button {
+  padding: 10px 20px
+}
+
 .pan-btn {
   font-size: 14px;
   color: #fff;
-  padding: 14px 36px;
+  padding: 10px 36px;
   border-radius: 8px;
   border: none;
   outline: none;
