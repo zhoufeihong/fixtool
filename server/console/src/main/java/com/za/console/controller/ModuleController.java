@@ -41,7 +41,7 @@ public class ModuleController {
     @ApiOperation(value = "查询模块信息")
     @GetMapping("/listModule")
     public ResultDTO<List<ModuleDTO>> listModule(String name, Integer page, Integer limit, String sort) {
-        return moduleService.listModuleDTO(name, PageRequestDTO.ofOperation(page - 1, limit, sort));
+        return moduleService.listModuleDTO(name, PageRequestDTO.ofOperation(page, limit, sort));
     }
 
     @ApiOperation("添加模块")

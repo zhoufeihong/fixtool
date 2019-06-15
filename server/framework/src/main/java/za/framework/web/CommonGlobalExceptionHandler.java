@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 public class CommonGlobalExceptionHandler {
 
-    private static final String SYSTEM_ERRO_INFO = "系统响应异常.";
+    private static final String SYSTEM_ERROR_INFO = "系统响应异常.";
 
     private static final String OPTIMISTIC_LOCKING_FAILURE_INFO = "存在用户同时操作,提交失败,请重试.";
 
@@ -95,7 +95,7 @@ public class CommonGlobalExceptionHandler {
         log.error("message:" + exception.getMessage() + "," + getStackMsg(exception));
         ResultDTO<String> resultDTO = new ResultDTO<>();
         resultDTO.setCode(code);
-        resultDTO.setMsg(SYSTEM_ERRO_INFO);
+        resultDTO.setMsg(SYSTEM_ERROR_INFO);
         return resultDTO;
     }
 

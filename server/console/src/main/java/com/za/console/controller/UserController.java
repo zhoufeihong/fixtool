@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import za.framework.dto.PageRequestDTO;
 
 import java.util.List;
 
@@ -29,8 +30,8 @@ public class UserController {
 
     @ApiOperation(value = "查询用户信息")
     @GetMapping("/listUser")
-    public ResultDTO<List<UserDTO>> listUser(String userName) {
-        return userService.listUser(userName);
+    public ResultDTO<List<UserDTO>> listUser(String userName, Integer page, Integer limit, String sort) {
+        return userService.listUser(userName, PageRequestDTO.ofOperation(page, limit, sort));
     }
 
     @ApiOperation(value = "更新角色信息")

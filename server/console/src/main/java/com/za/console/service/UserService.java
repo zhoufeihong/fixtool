@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import za.framework.dto.PageRequestDTO;
 
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
@@ -70,7 +71,22 @@ public class UserService {
      */
     public ResultDTO<List<UserDTO>> listUser(String userName) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
-        Pageable pageable = PageRequest.of(0, 10, sort);
+        Pageable pageable = PageRequest.of(0, 1000, sort);
+        return getListUserResultDTO(userName, pageable);
+    }
+
+    /**
+     * 查询用户信息
+     *
+     * @return
+     */
+    public ResultDTO<List<UserDTO>> listUser(String userName, PageRequestDTO pageRequestDTO) {
+        Pageable pageable = pageRequestDTO.toPageRequest();
+        //查询
+        return getListUserResultDTO(userName, pageable);
+    }
+
+    private ResultDTO<List<UserDTO>> getListUserResultDTO(String userName, Pageable pageable) {
         //查询
         Page<UserPO> userPOS = userReponsitory.findAll((root, criteriaQuery, criteriaBuilder) -> {
             //查询条件
@@ -80,7 +96,6 @@ public class UserService {
                 Predicate predicate2 = criteriaBuilder.like(root.get("name"), userName + "%");
                 predicates.add(criteriaBuilder.or(predicate1, predicate2));
             }
-            //.orderBy(criteriaBuilder.desc(root.get("id").as(Long.class)))
             return criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]))
                     .getRestriction();
         }, pageable);
@@ -131,6 +146,7 @@ public class UserService {
         userPO.setAvatar(userDto.getAvatar());
         userPO.setStatus(userDto.getStatus());
         userPO.setName(userDto.getName());
+        userPO.setEmail(userDto.getEmail());
         userReponsitory.saveAndFlush(userPO);
         return ResultDTO.success(BeanExtUtils.copyProperties(userPO, UserDTO.class));
     }

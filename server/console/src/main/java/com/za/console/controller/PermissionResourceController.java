@@ -64,7 +64,7 @@ public class PermissionResourceController {
     @ApiOperation(value = "查询权限资源项信息")
     @GetMapping("/listPermissionResource")
     public ResultDTO<List<PermissionResourceDTO>> listPermissionResource(String name, Integer page, Integer limit, String sort) {
-        return permissionResourceService.listPermissionResource(name, PageRequestDTO.ofOperation(page - 1, limit, sort));
+        return permissionResourceService.listPermissionResource(name, PageRequestDTO.ofOperation(page, limit, sort));
     }
 
     /**

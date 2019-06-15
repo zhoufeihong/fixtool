@@ -50,6 +50,13 @@ public class PageRequestDTO {
     }
 
     public static PageRequestDTO ofOperation(Integer page, Integer size, String properties) {
+        if (page == null) {
+            page = 1;
+        }
+        if (size == null) {
+            size = 50;
+        }
+        page -= 1;
         String direction = OrderDTO.Direction.ASC;
         if (StringUtils.isBlank(properties) || ((properties.length() < 2) && properties.matches(START_REGEX))) {
             return of(page, size);
