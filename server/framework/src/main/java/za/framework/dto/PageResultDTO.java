@@ -6,7 +6,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.domain.Page;
 
-import javax.validation.constraints.Max;
 import java.util.List;
 
 @Data

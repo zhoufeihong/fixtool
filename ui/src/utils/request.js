@@ -3,7 +3,7 @@ import { MessageBox, Message, Loading } from 'element-ui'
 import store from '@/store'
 import serverConfig from '@/api/setting'
 
-const excludes = [serverConfig.ConsleServerName + '/user/login', serverConfig.ConsleServerName + '/user/refreshToken']
+const excludes = [serverConfig.ConsleServerName + '/api/user/login', serverConfig.ConsleServerName + '/api/user/refreshToken']
 
 // create an axios instance
 const service = axios.create({

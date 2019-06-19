@@ -13,8 +13,6 @@ import java.io.Serializable;
 @Entity
 @Table(name = "T_Role_Auth")
 @JsonIgnoreProperties(value = {"hibernateLazyInitializer"})
-@SQLDelete(sql = "update T_Role_Auth set deleted = 1 where id = ? and version = ?")
-@Where(clause = "deleted = 0")
 public class RoleAuthPO extends AbstractAuditingWithVersionPo implements Serializable {
 
     @Column(name = "role_id")
@@ -23,7 +21,7 @@ public class RoleAuthPO extends AbstractAuditingWithVersionPo implements Seriali
     @Column(name = "permission_resources_code")
     private String permissionResourcesCode;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "permission_resources_code", referencedColumnName = "code",insertable = false,updatable = false)
     private PermissionResourcePO permissionResource;
 

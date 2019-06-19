@@ -13,35 +13,36 @@ import java.util.List;
 
 @Api(tags = "权限资源项功能")
 @RestController
-@RequestMapping("/permission_resource")
+@RequestMapping("/api/permission_resource")
 public class PermissionResourceController {
 
     @Autowired
     private PermissionResourceService permissionResourceService;
 
     /**
-     * 新增权限资源项
+     * 查询权限资源项信息
      *
      * @param
      * @return
      */
-    @ApiOperation(value = "添加权限资源项")
-    @PostMapping("/addPermissionResource")
-    public ResultDTO<PermissionResourceDTO> addPermissionResource(@RequestBody PermissionResourceDTO permissionResourceDTO) {
-        return permissionResourceService.addPermissionResource(permissionResourceDTO);
+    @ApiOperation(value = "查询权限资源项信息")
+    @GetMapping("/search")
+    public ResultDTO<List<PermissionResourceDTO>> listPermissionResourceByName(String name) {
+        return permissionResourceService.listPermissionResource(name);
     }
 
     /**
-     * 删除权限资源项
+     * 查询权限资源项信息
      *
-     * @param permissionResourceDTO
+     * @param
      * @return
      */
-    @ApiOperation(value = "删除权限资源项")
-    @PostMapping("/removePermissionResource")
-    public ResultDTO removePermissionResource(@RequestBody PermissionResourceDTO permissionResourceDTO) {
-        return permissionResourceService.removePermissionResource(permissionResourceDTO);
+    @ApiOperation(value = "查询权限资源项信息")
+    @GetMapping("/searchPageList")
+    public ResultDTO<List<PermissionResourceDTO>> listPermissionResource(String name, Integer page, Integer limit, String sort) {
+        return permissionResourceService.listPermissionResource(name, PageRequestDTO.ofOperation(page, limit, sort));
     }
+
 
     /**
      * 获取权限资源项信息
@@ -50,34 +51,23 @@ public class PermissionResourceController {
      * @return
      */
     @ApiOperation(value = "获取权限资源项信息")
-    @GetMapping("/getPermissionResource")
-    public ResultDTO<PermissionResourceDTO> getPermissionResource(Long id) {
+    @GetMapping("/{id}")
+    public ResultDTO<PermissionResourceDTO> getPermissionResource(@PathVariable("id") Long id) {
         return permissionResourceService.getPermissionResource(id);
     }
 
     /**
-     * 查询权限资源项信息
+     * 新增权限资源项
      *
      * @param
      * @return
      */
-    @ApiOperation(value = "查询权限资源项信息")
-    @GetMapping("/listPermissionResource")
-    public ResultDTO<List<PermissionResourceDTO>> listPermissionResource(String name, Integer page, Integer limit, String sort) {
-        return permissionResourceService.listPermissionResource(name, PageRequestDTO.ofOperation(page, limit, sort));
+    @ApiOperation(value = "添加权限资源项")
+    @PostMapping()
+    public ResultDTO<PermissionResourceDTO> add(@RequestBody PermissionResourceDTO permissionResourceDTO) {
+        return permissionResourceService.addPermissionResource(permissionResourceDTO);
     }
 
-    /**
-     * 查询权限资源项信息
-     *
-     * @param
-     * @return
-     */
-    @ApiOperation(value = "查询权限资源项信息")
-    @GetMapping("/listPermissionResourceByName")
-    public ResultDTO<List<PermissionResourceDTO>> listPermissionResourceByName(String name) {
-        return permissionResourceService.listPermissionResource(name);
-    }
 
     /**
      * 更新权限资源项信息
@@ -86,9 +76,20 @@ public class PermissionResourceController {
      * @return
      */
     @ApiOperation(value = "更新权限资源项信息")
-    @PostMapping("/updatePermissionResource")
-    public ResultDTO updatePermissionResource(@RequestBody PermissionResourceDTO permissionResourceDTO) {
+    @PutMapping("/{id}")
+    public ResultDTO update(@PathVariable("id") Long id, @RequestBody PermissionResourceDTO permissionResourceDTO) {
         return permissionResourceService.updatePermissionResource(permissionResourceDTO);
     }
 
+    /**
+     * 删除权限资源项
+     *
+     * @param id
+     * @return
+     */
+    @ApiOperation(value = "删除权限资源项")
+    @DeleteMapping("/{id}")
+    public ResultDTO delete(@PathVariable("id") Long id) {
+        return permissionResourceService.removePermissionResource(id);
+    }
 }

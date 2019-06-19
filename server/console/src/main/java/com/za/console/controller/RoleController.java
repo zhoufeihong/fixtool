@@ -13,42 +13,43 @@ import java.util.List;
 
 @Api(tags = "角色功能")
 @RestController
-@RequestMapping("/role")
+@RequestMapping("/api/role")
 public class RoleController {
 
     @Autowired
     RoleService roleService;
 
-    @ApiOperation(value = "新增角色")
-    @PostMapping("/addRole")
-    public ResultDTO<RoleDTO> addRole(@RequestBody RoleDTO roleDTO) {
-        return roleService.addRole(roleDTO);
-    }
-
-    @ApiOperation(value = "删除角色")
-    @PostMapping("/removeRole")
-    public ResultDTO removeRole(Long id) {
-        RoleDTO roleDTO = new RoleDTO();
-        roleDTO.setId(id);
-        return roleService.removeRole(roleDTO);
-    }
-
-    @ApiOperation(value = "获取角色信息")
-    @GetMapping("/getRole")
-    public ResultDTO<RoleDTO> getRole(@RequestParam("id") Long id) {
-        return roleService.getRole(id);
-    }
-
     @ApiOperation(value = "查询角色信息")
-    @GetMapping("/listRole")
-    public ResultDTO<List<RoleDTO>> listRole(String name) {
+    @GetMapping("/search")
+    public ResultDTO<List<RoleDTO>> search(String name) {
         return roleService.listRole(name);
     }
 
+
+    @ApiOperation(value = "获取角色信息")
+    @GetMapping("/{id}")
+    public ResultDTO<RoleDTO> get(@PathVariable("id") Long id) {
+        return roleService.getRole(id);
+    }
+
     @ApiOperation(value = "新增角色")
-    @PostMapping("/updateRole")
-    public ResultDTO updateRole(@RequestBody RoleDTO roleDTO) {
+    @PostMapping
+    public ResultDTO<RoleDTO> add(@RequestBody RoleDTO roleDTO) {
+        return roleService.addRole(roleDTO);
+    }
+
+    @ApiOperation(value = "修改角色信息")
+    @PutMapping("/{id}")
+    public ResultDTO update(@PathVariable("id") Long id,@RequestBody RoleDTO roleDTO) {
         return roleService.updateRole(roleDTO);
+    }
+
+    @ApiOperation(value = "删除角色")
+    @DeleteMapping("/{id}")
+    public ResultDTO delete(@PathVariable("id") Long id) {
+        RoleDTO roleDTO = new RoleDTO();
+        roleDTO.setId(id);
+        return roleService.removeRole(roleDTO);
     }
 
     @ApiOperation(value = "角色授权")
@@ -64,7 +65,7 @@ public class RoleController {
      * @return
      */
     @ApiOperation(value = "根据角色查询权限资源项")
-    @PostMapping("/queryPermissionResource")
+    @GetMapping("/queryPermissionResource")
     public ResultDTO<List<PermissionResourceDTO>> queryPermissionResource(Long roleId) {
         return roleService.queryPermissionResource(roleId);
     }

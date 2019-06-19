@@ -26,9 +26,9 @@ const mutations = {
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { userName, password } = userInfo
+    const { userCode, password } = userInfo
     return new Promise((resolve, reject) => {
-      login({ userName: userName.trim(), password: password }).then(response => {
+      login({ userCode: userCode.trim(), password: password }).then(response => {
         if (response.code === 0) {
           Message({
             message: response.msg || 'error',

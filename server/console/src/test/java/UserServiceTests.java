@@ -47,12 +47,12 @@ public class UserServiceTests extends AbstractConsoleTest {
     @Rollback(false)
     public void addRoleTest() {
         UserDTO user = userService.getUser(1L).getData();
-        RoleDTO r = user.getRoles().stream().filter(f -> f.getId() == 2).findFirst().orElse(null);
+        RoleDTO r = user.getUserRoles().stream().filter(f -> f.getId() == 2).findFirst().orElse(null);
         if (r != null) {
-            user.getRoles().remove(r);
+            user.getUserRoles().remove(r);
         }
         RoleDTO role = roleService.getRole(2L).getData();
-        user.getRoles().add(role);
+        user.getUserRoles().add(role);
         userService.updateRole(user);
     }
 

@@ -4,10 +4,8 @@ import com.za.console.service.dto.ModuleDTO;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 import za.framework.dto.PageRequestDTO;
@@ -74,7 +72,7 @@ public class ModuleServiceTests extends AbstractConsoleTest {
         List<ModuleDTO> listResult = moduleService.listModuleDTO("").getData();
         listResult.stream().forEach(f -> {
             if (f.getName().equals("testName")) {
-                Assert.assertTrue(moduleService.removeModule(f).getSuccess());
+                Assert.assertTrue(moduleService.removeModule(f.getId()).getSuccess());
             }
         });
     }

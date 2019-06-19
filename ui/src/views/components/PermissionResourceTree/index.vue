@@ -1,43 +1,60 @@
 <template>
-  <el-cascader
-    v-model="dataValue"
-    :options="options"
-    :props="{ checkStrictly: true }"
-    style="width:100%"
-    @change="handleChange"
-  />
+  <div>
+    <el-input v-if="showSearch" v-model="filterText" placeholder="输入关键字进行过滤" />
+    <el-tree ref="tree" :data="treeData" show-checkbox default-expand-all node-key="value" highlight-current :props="defaultProps" :filter-node-method="filterNode" @check="handleChange" />
+  </div>
 </template>
 
 <script>
 import { permissionResourceService } from '@/api/console/permissionResource'
 export default {
-  name: 'PermissionResourceCascader',
+  name: 'PermissionResourceTree',
   props: {
     value: {
-      required: false,
-      default: '',
-      type: String
+      required: true,
+      type: Array
     },
     isRoot: {
       required: false,
       default: false,
       type: Boolean
+    },
+    showSearch: {
+      required: false,
+      default: true,
+      type: Boolean
     }},
   data() {
     return {
-      dataValue: [this.value],
-      options: []
+      filterText: '',
+      treeData: [],
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      }
+    }
+  },
+  watch: {
+    filterText(val) {
+      this.$refs.tree.filter(val)
+    },
+    value(val) {
+      this.$refs.tree.setCheckedKeys(val)
     }
   },
   created() {
     this.listPermissionResource()
   },
   methods: {
+    filterNode(value, treeData) {
+      if (!value) return true
+      return treeData.label.indexOf(value) !== -1
+    },
     listPermissionResource() {
       permissionResourceService.search('').then(
         response => {
-          this.options = this.handleListPermissionResource(response.data)
-          this.dataValue = this.value
+          this.treeData = this.handleListPermissionResource(response.data)
+          this.$refs.tree.setCheckedKeys(this.value)
         }
       )
     },
@@ -68,14 +85,15 @@ export default {
       findP(dataRoot)
       return dataRoot.children
     },
-    handleChange(val) {
+    handleChange(data) {
+      const val = this.$refs.tree.getCheckedKeys()
       if (val && val instanceof Array) {
         if (val.length > 0) {
-          this.$emit('input', val[val.length - 1])
+          this.$emit('input', val)
           return
         }
       }
-      this.$emit('input', '')
+      this.$emit('input', [])
     }
   }
 }

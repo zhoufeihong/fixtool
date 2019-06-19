@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = false)
 public class BusErroException extends RuntimeException {
 
-    protected String code;
+    protected final String code;
 
     protected String showInfo;
 

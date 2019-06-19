@@ -1,7 +1,8 @@
 import request from '@/utils/request'
 import serverConfig from '../setting'
+import BaseService from '../baseService.js'
 
-const controllerName = serverConfig.ConsleServerName + '/user/'
+const controllerName = serverConfig.ConsleServerName + '/api/user/'
 
 export function login(data) {
   return request({
@@ -34,39 +35,23 @@ export function refreshToken(accessToken) {
   })
 }
 
-class UserService {
-  listUser(listQuery) {
-    return request({
-      url: controllerName + 'listUser',
-      method: 'get',
-      params: listQuery
-    })
+class UserService extends BaseService {
+  constructor() {
+    super(controllerName)
   }
-  addUser(data) {
-    return request({
-      url: controllerName + 'addUser',
-      method: 'post',
-      data
-    })
-  }
-  updateUser(data) {
-    return request({
-      url: controllerName + 'updateUser',
-      method: 'post',
-      data
-    })
-  }
+
   updatePassword(data) {
-    return request({
-      url: controllerName + 'updatePassword',
-      method: 'post',
+    return this.send({
+      urlMethod: 'updatePassword',
+      method: 'put',
       data
     })
   }
+
   updateRole(data) {
-    return request({
-      url: controllerName + 'updateRole',
-      method: 'post',
+    return this.send({
+      urlMethod: 'updateRole',
+      method: 'put',
       data
     })
   }

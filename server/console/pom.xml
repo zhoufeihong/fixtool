@@ -2,17 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
     <parent>
         <artifactId>server</artifactId>
         <groupId>com.za.fixtools</groupId>
-        <version>${fixtool.server.version}</version>
-        <relativePath>../</relativePath>
+        <version>0.0.1-SNAPSHOT</version>
     </parent>
-
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.za.fixtools</groupId>
     <artifactId>console</artifactId>
+    <packaging>jar</packaging>
     <dependencies>
         <dependency>
             <groupId>com.auth0</groupId>
@@ -22,7 +19,7 @@
         <dependency>
             <artifactId>framework</artifactId>
             <groupId>com.za.fixtools</groupId>
-            <version>${fixtool.server.framework.version}</version>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>

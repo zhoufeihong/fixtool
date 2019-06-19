@@ -10,44 +10,50 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import za.framework.dto.PageRequestDTO;
+import za.framework.dto.PageResultDTO;
 
 import java.util.List;
 
 @Api(tags = "用户功能")
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/api/user")
 public class UserController {
 
     @Autowired
     UserService userService;
 
+    @ApiOperation(value = "添加用户信息", notes = "添加用户信息")
+    @PostMapping()
+    public ResultDTO add(@RequestBody UserDTO user) {
+        return userService.addUser(user);
+    }
+
     @ApiOperation(value = "获取用户信息", notes = "通过id获取用户信息")
-    @ApiImplicitParam(name = "id", value = "用户id", required = true, dataType = "long", example = "1", paramType = "query")
-    @GetMapping("/getUser")
-    public ResultDTO<UserDTO> getUser(long id) {
+    @GetMapping("/{id}")
+    public ResultDTO<UserDTO> get(@PathVariable("id") long id) {
         return userService.getUser(id);
     }
 
     @ApiOperation(value = "查询用户信息")
-    @GetMapping("/listUser")
-    public ResultDTO<List<UserDTO>> listUser(String userName, Integer page, Integer limit, String sort) {
+    @GetMapping("/search")
+    public PageResultDTO<List<UserDTO>> search(String userName, Integer page, Integer limit, String sort) {
         return userService.listUser(userName, PageRequestDTO.ofOperation(page, limit, sort));
     }
 
+    @ApiOperation(value = "更新用户信息")
+    @PutMapping("/{id}")
+    public ResultDTO update(@PathVariable Long id, @RequestBody UserDTO userDto) {
+        return userService.updateUser(userDto);
+    }
+
     @ApiOperation(value = "更新角色信息")
-    @PostMapping("/updateRole")
+    @PutMapping("/updateRole")
     public ResultDTO updateRole(@RequestBody UserDTO user) {
         return userService.updateRole(user);
     }
 
-    @ApiOperation(value = "更新用户信息")
-    @PostMapping("/updateUser")
-    public ResultDTO updateUser(@RequestBody UserDTO userDto) {
-        return userService.updateUser(userDto);
-    }
-
     @ApiOperation(value = "修改密码")
-    @PostMapping("/updatePassword")
+    @PutMapping("/updatePassword")
     public ResultDTO updatePassword(@RequestBody UserDTO userDto) {
         return userService.updatePassword(userDto);
     }
@@ -55,15 +61,15 @@ public class UserController {
     @ApiOperation(value = "获取Token")
     @PostMapping("/getToken")
     public ResultDTO getToken(@RequestBody GetTokenParam getTokenParam) {
-        return userService.getToken(getTokenParam.getUserName(), getTokenParam.getPassword());
+        return userService.getToken(getTokenParam.getUserCode(), getTokenParam.getPassword());
     }
 
     @ApiOperation(value = "获取用户信息")
+    @ApiImplicitParam(name = "token", value = "token信息", required = true, dataType = "String", paramType = "query")
     @GetMapping("/getUserInfo")
     public ResultDTO getUserInfo(@RequestParam("accessToken") String accessToken) {
         return userService.getUserInfo(accessToken);
     }
-
 
     @ApiOperation(value = "刷新Token")
     @PostMapping("/refreshToken")

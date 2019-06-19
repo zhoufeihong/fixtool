@@ -53,7 +53,7 @@ public class AuthenticationFilter {
                             .getRequest()
                             .mutate()
                             .header("userId", linkedHashMap.get("id").toString())
-                            .header("userName", linkedHashMap.get("userName").toString())
+                            .header("userName", linkedHashMap.get("userCode").toString())
                             .build();
                     exchange = exchange.mutate().request(host).build();
                 } catch (Exception e) {
@@ -66,7 +66,7 @@ public class AuthenticationFilter {
     }
 
     private boolean needFilter(String path) {
-        if (path.equals("/user/getToken") || path.equals("/user/refreshToken")) {
+        if (path.endsWith("/user/getToken") || path.endsWith("/user/refreshToken")) {
             return false;
         }
         return true;

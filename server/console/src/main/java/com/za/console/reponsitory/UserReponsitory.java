@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserReponsitory extends JpaRepository<UserPO, Long> {
     Page<UserPO> findAll(Specification<UserPO> specification, Pageable pageable);
-    UserPO findByUserName(String userName);
+    UserPO findByUserCode(String userCode);
 }

@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class GetTokenParam {
-    private String userName;
+    private String userCode;
     private String password;
 }

@@ -6,15 +6,15 @@
         <h3 class="title">Login Form</h3>
       </div>
 
-      <el-form-item prop="userName">
+      <el-form-item prop="userCode">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          ref="userName"
-          v-model="loginForm.userName"
-          placeholder="userName"
-          name="userName"
+          ref="userCode"
+          v-model="loginForm.userCode"
+          placeholder="userCode"
+          name="userCode"
           type="text"
           tabindex="1"
           auto-complete="on"
@@ -44,7 +44,7 @@
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
 
       <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
+        <span style="margin-right:20px;">userCode: admin</span>
         <span> password: 123456</span>
       </div>
 
@@ -53,13 +53,13 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
+import { validUserCode } from '@/utils/validate'
 
 export default {
   name: 'Login',
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
+    const validateUserCode = (rule, value, callback) => {
+      if (!validUserCode(value)) {
         callback(new Error('Please enter the correct user name'))
       } else {
         callback()
@@ -74,11 +74,11 @@ export default {
     }
     return {
       loginForm: {
-        userName: 'admin',
+        userCode: 'admin',
         password: '123456'
       },
       loginRules: {
-        userName: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        userCode: [{ required: true, trigger: 'blur', validator: validateUserCode }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,

@@ -1,43 +1,11 @@
-import request from '@/utils/request'
 import serverConfig from '../setting'
+import BaseService from '../baseService.js'
 
-const controllerName = serverConfig.ConsleServerName + '/permission_resource/'
+const controllerName = serverConfig.ConsleServerName + '/api/permission_resource/'
 
-class PermissionResourceService {
-  listPermissionResource(listQuery) {
-    return request({
-      url: controllerName + 'listPermissionResource',
-      method: 'get',
-      params: listQuery
-    })
-  }
-  listPermissionResourceByName(name) {
-    return request({
-      url: controllerName + 'listPermissionResourceByName',
-      method: 'get',
-      params: { name }
-    })
-  }
-  addPermissionResource(data) {
-    return request({
-      url: controllerName + 'addPermissionResource',
-      method: 'post',
-      data
-    })
-  }
-  removePermissionResource(data) {
-    return request({
-      url: controllerName + 'removePermissionResource',
-      method: 'post',
-      data
-    })
-  }
-  updatePermissionResource(data) {
-    return request({
-      url: controllerName + 'updatePermissionResource',
-      method: 'post',
-      data
-    })
+class PermissionResourceService extends BaseService {
+  constructor() {
+    super(controllerName)
   }
 }
 

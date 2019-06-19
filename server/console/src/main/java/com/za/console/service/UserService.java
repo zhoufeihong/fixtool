@@ -1,9 +1,11 @@
 package com.za.console.service;
 
 import com.za.common.dto.ResultDTO;
+import com.za.common.generate.SnowflakeIdWorker;
 import com.za.common.utils.AssertExtUtils;
 import com.za.common.utils.BeanExtUtils;
 import com.za.common.utils.PasswordUtils;
+import com.za.common.utils.RegexMatchingRuleUtils;
 import com.za.console.common.utils.JWTUtils;
 import com.za.console.entity.RolePO;
 import com.za.console.entity.UserPO;
@@ -13,24 +15,25 @@ import com.za.console.service.dto.RoleDTO;
 import com.za.console.service.dto.UserDTO;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import za.framework.dto.PageRequestDTO;
+import za.framework.dto.PageResultDTO;
 
 import javax.persistence.criteria.Predicate;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @CacheConfig(cacheNames = "user")
+@DependsOn("snowflakeIdWorker.userCode")
 public class UserService {
 
     // 过期时间10分钟
@@ -40,11 +43,49 @@ public class UserService {
 
     private static final String INVALID_TOKEN = "无效秘钥";
 
+    private static final String ADD_USER_ERROR = "添加用户失败:";
+
     @Autowired
     UserReponsitory userReponsitory;
 
     @Autowired
     RoleReponsitory roleReponsitory;
+
+    @Autowired
+    @Qualifier("snowflakeIdWorker.userCode")
+    SnowflakeIdWorker snowflakeIdWorker;
+
+    /**
+     * 添加用户
+     *
+     * @param user
+     * @return
+     */
+    public ResultDTO addUser(UserDTO user) {
+        if (user == null) {
+            return ResultDTO.error(ADD_USER_ERROR + "用户信息为空");
+        }
+        if (StringUtils.isBlank(user.getPassword())) {
+            return ResultDTO.error(ADD_USER_ERROR + "密码格式不正确");
+        }
+        String userCode = user.getUserCode();
+        if (StringUtils.isNotBlank(user.getUserCode())) {
+            if (!RegexMatchingRuleUtils.userCode(user.getUserCode())) {
+                return ResultDTO.error(ADD_USER_ERROR + "用户编号格式不正确");
+            }
+            if (userReponsitory.findByUserCode(user.getUserCode()) != null) {
+                return ResultDTO.error(ADD_USER_ERROR + "已经存在用户编号");
+            }
+        } else {
+            userCode = String.valueOf(snowflakeIdWorker.nextId());
+        }
+        UserPO userPO = BeanExtUtils.copyProperties(user, UserPO.class);
+        userPO.setMfaSecret(UUID.randomUUID().toString().replace("-", ""));
+        userPO.setPassword(PasswordUtils.encrypt(user.getPassword(), userPO.getMfaSecret()));
+        userPO.setUserCode(userCode);
+        userReponsitory.saveAndFlush(userPO);
+        return ResultDTO.success();
+    }
 
     /**
      * 获取用户信息
@@ -60,7 +101,7 @@ public class UserService {
         }
         //复制user信息
         UserDTO userResult = BeanExtUtils.copyProperties(userPO, UserDTO.class);
-        userResult.setRoles(BeanExtUtils.copyPropertiesOfList(userPO.getUserRoles(), RoleDTO.class));
+        userResult.setUserRoles(BeanExtUtils.copyPropertiesOfList(userPO.getUserRoles(), RoleDTO.class));
         return ResultDTO.success(userResult);
     }
 
@@ -69,7 +110,7 @@ public class UserService {
      *
      * @return
      */
-    public ResultDTO<List<UserDTO>> listUser(String userName) {
+    public PageResultDTO<List<UserDTO>> listUser(String userName) {
         Sort sort = new Sort(Sort.Direction.DESC, "id");
         Pageable pageable = PageRequest.of(0, 1000, sort);
         return getListUserResultDTO(userName, pageable);
@@ -80,26 +121,26 @@ public class UserService {
      *
      * @return
      */
-    public ResultDTO<List<UserDTO>> listUser(String userName, PageRequestDTO pageRequestDTO) {
+    public PageResultDTO<List<UserDTO>> listUser(String userName, PageRequestDTO pageRequestDTO) {
         Pageable pageable = pageRequestDTO.toPageRequest();
         //查询
         return getListUserResultDTO(userName, pageable);
     }
 
-    private ResultDTO<List<UserDTO>> getListUserResultDTO(String userName, Pageable pageable) {
+    private PageResultDTO<List<UserDTO>> getListUserResultDTO(String userName, Pageable pageable) {
         //查询
         Page<UserPO> userPOS = userReponsitory.findAll((root, criteriaQuery, criteriaBuilder) -> {
             //查询条件
             List<Predicate> predicates = new ArrayList<>();
             if (!StringUtils.isEmpty(userName)) {
-                Predicate predicate1 = criteriaBuilder.like(root.get("userName"), userName + "%");
+                Predicate predicate1 = criteriaBuilder.like(root.get("userCode"), userName + "%");
                 Predicate predicate2 = criteriaBuilder.like(root.get("name"), userName + "%");
                 predicates.add(criteriaBuilder.or(predicate1, predicate2));
             }
             return criteriaQuery.where(predicates.toArray(new Predicate[predicates.size()]))
                     .getRestriction();
         }, pageable);
-        return ResultDTO.success(BeanExtUtils.copyPropertiesOfList(userPOS.getContent(), UserDTO.class));
+        return PageResultDTO.pageSuccess(userPOS, UserDTO.class);
     }
 
     /**
@@ -116,8 +157,8 @@ public class UserService {
             return ResultDTO.error(NOT_FIND_USER);
         }
         Set<RolePO> rolePOS = new LinkedHashSet<>();
-        if (user.getRoles() != null) {
-            for (RoleDTO roleDTO : user.getRoles()) {
+        if (user.getUserRoles() != null) {
+            for (RoleDTO roleDTO : user.getUserRoles()) {
                 RolePO tempRolePO = roleReponsitory.getOne(roleDTO.getId());
                 if (tempRolePO == null) {
                     return ResultDTO.error("不能添加不存在的角色信息.");
@@ -176,15 +217,15 @@ public class UserService {
     /**
      * 获取Token
      *
-     * @param userName
+     * @param userCode
      * @param password
      * @return
      */
-    public ResultDTO getToken(String userName, String password) {
-        if (StringUtils.isBlank(userName)) {
+    public ResultDTO getToken(String userCode, String password) {
+        if (StringUtils.isBlank(userCode)) {
             return ResultDTO.error("用户格式不正确.");
         }
-        UserPO userPO = userReponsitory.findByUserName(userName);
+        UserPO userPO = userReponsitory.findByUserCode(userCode);
         if (userPO == null) {
             return ResultDTO.error("不存在的用户.");
         }
@@ -193,7 +234,7 @@ public class UserService {
         }
         //验证密码
         if (PasswordUtils.verify(password, userPO.getMfaSecret(), userPO.getPassword())) {
-            return ResultDTO.success(JWTUtils.sign(userName, userPO.getId(), userPO.getPassword(), EXPIRE_TIME));
+            return ResultDTO.success(JWTUtils.sign(userCode, userPO.getId(), userPO.getPassword(), EXPIRE_TIME));
         }
         return ResultDTO.error("请输入正确的用户名或密码.");
     }
@@ -205,13 +246,13 @@ public class UserService {
      * @return
      */
     public ResultDTO<UserDTO> getUserInfo(String accessToken) {
-        String userName = JWTUtils.getUsername(accessToken);
-        if (StringUtils.isBlank(userName)) {
+        String userCode = JWTUtils.getUsername(accessToken);
+        if (StringUtils.isBlank(userCode)) {
             return ResultDTO.error(INVALID_TOKEN);
         }
-        UserPO userPO = userReponsitory.findByUserName(userName);
+        UserPO userPO = userReponsitory.findByUserCode(userCode);
         try {
-            JWTUtils.verify(accessToken, userName, userPO.getPassword());
+            JWTUtils.verify(accessToken, userCode, userPO.getPassword());
         } catch (Exception ex) {
             return ResultDTO.error(INVALID_TOKEN);
         }
@@ -225,17 +266,17 @@ public class UserService {
      * @return
      */
     public ResultDTO refreshToken(String accessToken) {
-        String userName = JWTUtils.getUsername(accessToken);
-        if (StringUtils.isBlank(userName)) {
+        String userCode = JWTUtils.getUsername(accessToken);
+        if (StringUtils.isBlank(userCode)) {
             return ResultDTO.error("无效秘钥.");
         }
-        UserPO userPO = userReponsitory.findByUserName(userName);
+        UserPO userPO = userReponsitory.findByUserCode(userCode);
         try {
-            JWTUtils.verify(accessToken, userName, userPO.getPassword());
+            JWTUtils.verify(accessToken, userCode, userPO.getPassword());
         } catch (Exception ex) {
             return ResultDTO.error("刷新失败.");
         }
-        return ResultDTO.success(JWTUtils.sign(userName, userPO.getId(), userPO.getPassword(), EXPIRE_TIME));
+        return ResultDTO.success(JWTUtils.sign(userCode, userPO.getId(), userPO.getPassword(), EXPIRE_TIME));
     }
 
     /**
@@ -245,10 +286,10 @@ public class UserService {
      * @return
      */
     public ResultDTO verify(String accessToken) {
-        String userName = JWTUtils.getUsername(accessToken);
-        UserPO userPO = userReponsitory.findByUserName(userName);
+        String userCode = JWTUtils.getUsername(accessToken);
+        UserPO userPO = userReponsitory.findByUserCode(userCode);
         try {
-            JWTUtils.verify(accessToken, userName, userPO.getPassword());
+            JWTUtils.verify(accessToken, userCode, userPO.getPassword());
         } catch (Exception ex) {
             return ResultDTO.error("无效令牌..");
         }

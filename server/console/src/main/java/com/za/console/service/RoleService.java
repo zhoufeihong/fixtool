@@ -128,6 +128,7 @@ public class RoleService {
         rolePO.setName(roleDTO.getName());
         rolePO.setCode(roleDTO.getCode());
         rolePO.setStatus(roleDTO.getStatus());
+        rolePO.setRemark(roleDTO.getRemark());
         roleReponsitory.saveAndFlush(rolePO);
         return ResultDTO.success();
     }

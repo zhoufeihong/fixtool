@@ -3,13 +3,13 @@
     <div class="filter-container">
       <el-input v-model="listQuery.name" placeholder="名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
-        Search
+        查找
       </el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
-        Add
+        添加
       </el-button>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
-        Export
+        导出
       </el-button>
     </div>
 
@@ -42,7 +42,7 @@
         </template>
       </el-table-column>
       <el-table-column label="创建时间" prop="createTime" width="110px" align="center" />
-      <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" width="230" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             修改
@@ -80,10 +80,10 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
-          Cancel
+          取消
         </el-button>
         <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">
-          Confirm
+          提交
         </el-button>
       </div>
     </el-dialog>
@@ -153,7 +153,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      permissionResourceService.listPermissionResource(this.listQuery).then(response => {
+      permissionResourceService.searchPageList(this.listQuery).then(response => {
         this.list = response.data
         this.total = response.total
 
@@ -202,7 +202,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          permissionResourceService.addPermissionResource(this.temp).then(response => {
+          permissionResourceService.add(this.temp).then(response => {
             if (response.code === 1) {
               // this.list.unshift(this.temp)
               this.dialogFormVisible = false
@@ -231,7 +231,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          permissionResourceService.updatePermissionResource(tempData).then((response) => {
+          permissionResourceService.update(tempData.id, tempData).then((response) => {
             if (response.code === 1) {
               for (const v of this.list) {
                 if (v.id === this.temp.id) {
@@ -258,10 +258,23 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        permissionResourceService.removePermissionResource(row).then(response => {
+        permissionResourceService.delete(row.id).then(response => {
           if (response.code === 1) {
+            this.$notify({
+              title: '成功',
+              message: '操作成功',
+              type: 'success',
+              duration: 2000
+            })
             const index = this.list.indexOf(row)
             this.list.splice(index, 1)
+          } else {
+            this.$notify({
+              title: '失败',
+              message: response.msg,
+              type: 'error',
+              duration: 2000
+            })
           }
         })
       }).catch(() => {})

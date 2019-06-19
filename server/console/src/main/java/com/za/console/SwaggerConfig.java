@@ -29,7 +29,7 @@ public class SwaggerConfig {
     @Bean
     public Docket createRestApi() {
         ParameterBuilder tokenPar = new ParameterBuilder();
-        List<Parameter> pars = new ArrayList<Parameter>();
+        List<Parameter> pars = new ArrayList<>();
         tokenPar.name("Authorization").description("user token")
                 .modelRef(new ModelRef("string")).parameterType("header")
                 .required(false).build();

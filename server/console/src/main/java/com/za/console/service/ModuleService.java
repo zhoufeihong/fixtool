@@ -95,13 +95,12 @@ public class ModuleService {
     /**
      * 删除模块
      *
-     * @param moduleDTO
+     * @param id
      * @return
      */
-    @CacheEvict(key = "#moduleDTO.id")
-    public ResultDTO removeModule(ModuleDTO moduleDTO) {
-        AssertExtUtils.notEmpty(moduleDTO, MODULEDTO_PARAM);
-        ModulePO modulePO = moduleReponsitory.findById(moduleDTO.getId()).orElse(null);
+    @CacheEvict(key = "#id")
+    public ResultDTO removeModule(Long id) {
+        ModulePO modulePO = moduleReponsitory.findById(id).orElse(null);
         if (modulePO == null) {
             return ResultDTO.error("没有找到需要删除的模块信息.");
         }

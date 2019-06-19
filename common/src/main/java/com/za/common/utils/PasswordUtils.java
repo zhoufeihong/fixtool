@@ -20,8 +20,7 @@ public class PasswordUtils {
             String dataStr = text + salt;
             MessageDigest m = MessageDigest.getInstance("MD5");
             m.update(dataStr.getBytes("UTF8"));
-            byte s[] = m.digest();
-            String result = "";
+            byte[] s = m.digest();
             StringBuilder stringBuilder = new StringBuilder();
             for (int i = 0; i < s.length; i++) {
                 stringBuilder.append(Integer.toHexString((0x000000FF & s[i]) | 0xFFFFFF00).substring(6));
@@ -46,11 +45,7 @@ public class PasswordUtils {
     public static boolean verify(String text, String key, String md5) {
         //根据传入的密钥进行验证
         String md5Text = encrypt(text, key);
-        if (md5Text.equalsIgnoreCase(md5)) {
-            return true;
-        }
-
-        return false;
+        return md5Text.equalsIgnoreCase(md5);
     }
 
 }

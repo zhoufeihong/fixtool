@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.userName" placeholder="姓名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="listQuery.name" placeholder="角色名称" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         查找
       </el-button>
@@ -30,19 +30,18 @@
           <span>{{ scope.row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="用户编号" align="center" prop="userCode" />
-      <el-table-column label="用户名" width="150px" align="center">
+      <el-table-column label="编号" align="center" prop="code" />
+      <el-table-column label="名称" width="150px" align="center">
         <template slot-scope="scope">
           <span class="link-type" @click="handleUpdate(scope.row)">{{ scope.row.name }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="email" align="center" prop="email" />
-      <el-table-column label="图标" align="center" prop="avatar" />
       <el-table-column label="状态" width="110px" align="center">
         <template slot-scope="scope">
           <span style="color:red;">{{ scope.row.status | statusFilter }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="备注" align="center" prop="remark" />
       <el-table-column label="创建时间">
         <template slot-scope="scope">
           <span>{{ scope.row.createTime }}</span>
@@ -53,14 +52,13 @@
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             修改
           </el-button>
-          <el-button type="primary" size="mini" @click="handleUpdateRole(row)">
-            分配角色
+          <el-button type="primary" size="mini" @click="handleUpdatePermission(row)">
+            分配权限
           </el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="70px" style="width: 400px; margin-left:50px;">
         <el-form-item label="ID" prop="id">
@@ -69,28 +67,16 @@
         <el-form-item label="名称" prop="name">
           <el-input v-model="temp.name" />
         </el-form-item>
-        <el-form-item label="用户编号" prop="userCode">
-          <el-input v-model="temp.userCode" :readonly="dialogStatus!='create'" placeholder="不填则自动生成" />
-        </el-form-item>
-        <el-form-item v-if="dialogStatus=='create'" label="密码" prop="password">
-          <el-input v-model="temp.password" :type="passwordType" />
-          <span class="show-pwd" @click="showPwd">
-            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-          </span>
-        </el-form-item>
-        <el-form-item v-if="dialogStatus=='create'" label="确认密码" prop="password_confirm">
-          <el-input v-model="temp.password1" :type="passwordType" />
-        </el-form-item>
-        <el-form-item label="email" prop="email">
-          <el-input v-model="temp.email" />
+        <el-form-item label="编号" prop="code">
+          <el-input v-model="temp.code" />
         </el-form-item>
         <el-form-item label="状态" prop="status">
           <el-select v-model="temp.status" class="filter-item" placeholder="Please select">
             <el-option v-for="item in statusOptions" :key="item.key" :label="item.name" :value="item.key" />
           </el-select>
         </el-form-item>
-        <el-form-item label="图标">
-          <el-input v-model="temp.avatar" :max="3" style="margin-top:8px;" />
+        <el-form-item label="备注" prop="remark">
+          <el-input v-model="temp.remark" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -103,43 +89,34 @@
       </div>
     </el-dialog>
 
-    <el-dialog ref="dataRoleForm" title="分配角色" :visible.sync="dialogRoleFormVisible">
+    <el-dialog ref="dataRoleForm" title="分配权限" :visible.sync="dialogPermissionFormVisible">
       <el-form label-position="right" label-width="70px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="角色" prop="roles">
-          <el-select v-model="roleValues" multiple filterable placeholder="请选择" style="width:90%">
-            <el-option
-              v-for="item in roleOptions"
-              :key="item.id"
-              :label="item.name"
-              :value="item.id"
-            />
-          </el-select>
+        <el-form-item label="权限" prop="permissions">
+          <permission-resource-tree v-model="permissionValues" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogRoleFormVisible = false">
+        <el-button @click="dialogPermissionFormVisible = false">
           取消
         </el-button>
-        <el-button type="primary" @click="updateRole()">
+        <el-button type="primary" @click="updatePermission()">
           提交
         </el-button>
       </div>
     </el-dialog>
-
   </div>
 </template>
 
 <script>
-import { userService } from '@/api/console/user'
+import roleService from '@/api/console/role'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import roleService from '@/api/console/role'
+import PermissionResourceTree from '@/views/components/PermissionResourceTree'
 
 export default {
-  name: 'Module',
-  components: { Pagination },
+  name: 'Role',
   directives: { waves },
+  components: { PermissionResourceTree },
   filters: {
     statusFilter(status) {
       const statusMap = {
@@ -152,9 +129,7 @@ export default {
   data() {
     return {
       currentRow: null,
-      roleValues: [],
-      roleOptions: undefined,
-      passwordType: 'password',
+      permissionValues: [],
       tableKey: 0,
       list: null,
       total: 0,
@@ -162,74 +137,42 @@ export default {
       listQuery: {
         page: 1,
         limit: 10,
-        userName: undefined
+        name: undefined
       },
       temp: {
         id: undefined,
-        userCode: '',
         name: '',
-        email: '',
-        avatar: '',
+        code: '',
         status: 1,
-        createTime: undefined,
-        password: '',
-        password1: ''
+        remark: ''
       },
       statusOptions: [{ key: 1, name: '有效' }, { key: 0, name: '无效' }],
       dialogFormVisible: false,
       dialogStatus: '',
-      dialogRoleFormVisible: false,
+      dialogPermissionFormVisible: false,
       textMap: {
-        update: '修改',
+        update: '编辑',
         create: '创建'
       },
       dialogPvVisible: false,
       rules: {
         name: [{ required: true, message: '名称为必填', trigger: 'change' }],
-        status: [{ required: true, message: 'status为必选', trigger: 'blur' }],
-        email: [{ required: true, type: 'email', message: '格式不对', trigger: 'blur' }],
-        password: [{ required: true, message: '密码为必填', trigger: 'blur' }],
-        password_confirm: [{ validator: this.validatePass, trigger: 'blur' }]
+        status: [{ required: true, message: '状态为必选', trigger: 'blur' }],
+        code: [{ required: true, message: 'code为必选', trigger: 'blur' }]
       },
       downloadLoading: false
     }
   },
   created() {
     this.getList()
-    this.getRoleList()
   },
   methods: {
     handleCurrentChange(val) {
       this.currentRow = val
     },
-    validatePass(rule, value, callback) {
-      if (value === '') {
-        callback(new Error('请再次输入密码'))
-      } else if (this.temp.password1 !== this.temp.password) {
-        callback(new Error('两次输入密码不一致!'))
-      } else {
-        callback()
-      }
-    },
-    showPwd() {
-      if (this.passwordType === 'password') {
-        this.passwordType = ''
-      } else {
-        this.passwordType = 'password'
-      }
-    },
-    getRoleList() {
-      this.listLoading = true
-      roleService.search().then(response => {
-        this.roleOptions = response.data
-        setTimeout(() => {
-          this.listLoading = false
-        }, 0.5 * 1000)
-      })
-    },
     getList() {
       this.listLoading = true
-      userService.search(this.listQuery).then(response => {
+      roleService.search(this.listQuery.name).then(response => {
         this.list = response.data
         this.total = response.total
 
@@ -260,14 +203,10 @@ export default {
     resetTemp() {
       this.temp = {
         id: undefined,
-        userCode: '',
         name: '',
-        email: '',
-        avatar: '',
+        code: '',
         status: 1,
-        createTime: undefined,
-        password: '',
-        password1: ''
+        remark: ''
       }
     },
     handleCreate() {
@@ -281,7 +220,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          userService.add(this.temp).then(response => {
+          roleService.add(this.temp).then(response => {
             if (response.code === 1) {
               // this.list.unshift(this.temp)
               this.dialogFormVisible = false
@@ -313,19 +252,21 @@ export default {
         this.$refs['dataForm'].clearValidate()
       })
     },
-    handleUpdateRole(row) {
-      this.dialogRoleFormVisible = true
-      this.roleValues = row.userRoles.map(m => { return m.id })
+    handleUpdatePermission(row) {
+      roleService.queryPermissionResource(row.id).then(response => {
+        this.permissionValues = response.data.map(m => m.code)
+        this.dialogPermissionFormVisible = true
+      })
     },
-    updateRole() {
-      const userId = this.currentRow.id
-      const userRoles = this.roleValues.map(m => { return { id: m } })
-      const tempData = { id: userId, userRoles }
-      userService.updateRole(tempData).then((response) => {
+    updatePermission() {
+      const id = this.currentRow.id
+      const permissionResources = this.permissionValues.map(m => { return { code: m } })
+      const tempData = { id: id, permissionResources }
+      roleService.grantAuthorization(tempData).then((response) => {
         if (response.code === 1) {
           for (const v of this.list) {
-            if (v.id === userId) {
-              v.userRoles = userRoles
+            if (v.id === id) {
+              v.permissionResources = permissionResources
               break
             }
           }
@@ -336,6 +277,13 @@ export default {
             duration: 2000
           })
           this.dialogRoleFormVisible = false
+        } else {
+          this.$notify({
+            title: '失败',
+            message: response.msg,
+            type: 'error',
+            duration: 2000
+          })
         }
       }).catch(error => {
         this.$notify({
@@ -350,7 +298,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          userService.update(tempData.id, tempData).then((response) => {
+          roleService.update(tempData.id, tempData).then((response) => {
             if (response.code === 1) {
               for (const v of this.list) {
                 if (v.id === this.temp.id) {
@@ -381,8 +329,8 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['id', 'name', 'email']
-        const filterVal = ['id', 'name', 'email']
+        const tHeader = ['id', 'name', 'code']
+        const filterVal = ['id', 'name', 'code']
         const data = this.formatJson(filterVal, this.list)
         excel.export_json_to_excel({
           header: tHeader,

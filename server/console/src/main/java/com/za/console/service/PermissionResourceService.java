@@ -40,16 +40,15 @@ public class PermissionResourceService {
     /**
      * 删除权限资源项
      *
-     * @param permissionResourceDTO
+     * @param id
      * @return
      */
-    public ResultDTO removePermissionResource(PermissionResourceDTO permissionResourceDTO) {
-        AssertExtUtils.notEmpty(permissionResourceDTO, INPUT_DTO_NAME);
-        PermissionResourcePO permissionResourcePO = permissionResourceReponsitory.findById(permissionResourceDTO.getId()).orElse(null);
+    public ResultDTO removePermissionResource(Long id) {
+        PermissionResourcePO permissionResourcePO = permissionResourceReponsitory.findById(id).orElse(null);
         if (permissionResourcePO == null) {
             return ResultDTO.error("没有找到需要删除的权限资源项信息.");
         }
-        permissionResourceReponsitory.deleteById(permissionResourceDTO.getId());
+        permissionResourceReponsitory.deleteById(id);
         return ResultDTO.success();
     }
 

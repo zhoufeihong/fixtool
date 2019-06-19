@@ -18,9 +18,9 @@ import java.util.Set;
 @Where(clause = "deleted = 0")
 public class UserPO extends AbstractAuditingWithVersionPo implements Serializable {
 
-    @Column(name = "userName")
+    @Column(name = "user_code")
     @Basic
-    private String userName;
+    private String userCode;
 
     @Column(name = "password")
     @Basic
