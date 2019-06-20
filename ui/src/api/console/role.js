@@ -1,4 +1,3 @@
-import request from '@/utils/request'
 import serverConfig from '../setting'
 import BaseService from '../baseService.js'
 
@@ -16,7 +15,7 @@ class RoleService extends BaseService {
     })
   }
   queryPermissionResource(roleId) {
-    return request({
+    return this.send({
       urlMethod: 'queryPermissionResource',
       method: 'get',
       params: { roleId }

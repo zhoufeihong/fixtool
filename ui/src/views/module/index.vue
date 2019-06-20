@@ -22,6 +22,7 @@
       highlight-current-row
       style="width: 100%;"
       @sort-change="sortChange"
+      @current-change="handleCurrentChange"
     >
       <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80">
         <template slot-scope="scope">
@@ -121,6 +122,7 @@ export default {
   },
   data() {
     return {
+      currentRow: null,
       tableKey: 0,
       list: null,
       total: 0,
@@ -145,8 +147,8 @@ export default {
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
-        update: 'Edit',
-        create: 'Create'
+        update: '编辑',
+        create: '新增'
       },
       dialogPvVisible: false,
       rules: {
@@ -161,6 +163,9 @@ export default {
     this.getListParentOptions()
   },
   methods: {
+    handleCurrentChange(val) {
+      this.currentRow = val
+    },
     getList() {
       this.listLoading = true
       moduleService.searchPageList(this.listQuery).then(response => {
@@ -213,6 +218,9 @@ export default {
       this.getListParentOptions()
       this.dialogStatus = 'create'
       this.dialogFormVisible = true
+      if (this.currentRow && this.currentRow.parentId === 0) {
+        this.temp.parentId = this.currentRow.id
+      }
       this.$nextTick(() => {
         this.$refs['dataForm'].clearValidate()
       })
