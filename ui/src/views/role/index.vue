@@ -172,7 +172,7 @@ export default {
     },
     getList() {
       this.listLoading = true
-      roleService.search(this.listQuery.name).then(response => {
+      roleService.search(this.listQuery).then(response => {
         this.list = response.data
         this.total = response.total
 
