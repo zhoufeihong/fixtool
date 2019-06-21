@@ -9,16 +9,14 @@ class ModuleService extends BaseService {
   }
   listMenu() {
     return this.send({
-      urlMethod: 'listMenu',
-      method: 'get',
-      params: { rootId: 0 }
+      urlMethod: 'menus',
+      method: 'get'
     })
   }
   listModuleByParentId(parentId) {
     return this.send({
-      urlMethod: 'listModuleByParentId',
-      method: 'get',
-      params: { parentId }
+      urlMethod: parentId + '/Submodule',
+      method: 'get'
     })
   }
 }

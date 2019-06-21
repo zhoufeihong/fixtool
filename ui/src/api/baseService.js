@@ -8,16 +8,7 @@ export default class BaseService {
   // 查询
   search(params) {
     return request({
-      url: this.controllerName + 'search',
-      method: 'get',
-      params: params
-    })
-  }
-
-  // 分页查询
-  searchPageList(params) {
-    return request({
-      url: this.controllerName + 'searchPageList',
+      url: this.controllerName,
       method: 'get',
       params: params
     })

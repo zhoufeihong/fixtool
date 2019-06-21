@@ -20,11 +20,10 @@ public class RoleController {
     RoleService roleService;
 
     @ApiOperation(value = "查询角色信息")
-    @GetMapping("/search")
+    @GetMapping()
     public ResultDTO<List<RoleDTO>> search(String name) {
         return roleService.listRole(name);
     }
-
 
     @ApiOperation(value = "获取角色信息")
     @GetMapping("/{id}")
@@ -40,7 +39,7 @@ public class RoleController {
 
     @ApiOperation(value = "修改角色信息")
     @PutMapping("/{id}")
-    public ResultDTO update(@PathVariable("id") Long id,@RequestBody RoleDTO roleDTO) {
+    public ResultDTO update(@PathVariable("id") Long id, @RequestBody RoleDTO roleDTO) {
         return roleService.updateRole(roleDTO);
     }
 
@@ -53,21 +52,21 @@ public class RoleController {
     }
 
     @ApiOperation(value = "角色授权")
-    @PostMapping("/grantAuthorization")
-    public ResultDTO grantAuthorization(@RequestBody RoleDTO roleDTO) {
+    @PatchMapping("/{id}/permission_resources")
+    public ResultDTO updatePermissionResources(@PathVariable("id") Long id, @RequestBody RoleDTO roleDTO) {
         return roleService.grantAuthorization(roleDTO);
     }
 
     /**
      * 根据角色Id查询权限资源项
      *
-     * @param roleId
+     * @param id
      * @return
      */
     @ApiOperation(value = "根据角色查询权限资源项")
-    @GetMapping("/queryPermissionResource")
-    public ResultDTO<List<PermissionResourceDTO>> queryPermissionResource(Long roleId) {
-        return roleService.queryPermissionResource(roleId);
+    @GetMapping("/{id}/permission_resources")
+    public ResultDTO<List<PermissionResourceDTO>> queryPermissionResource(@PathVariable("id") Long id) {
+        return roleService.queryPermissionResource(id);
     }
 
 }

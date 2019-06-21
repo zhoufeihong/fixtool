@@ -20,14 +20,8 @@ public class ModuleController {
     @Autowired
     ModuleService moduleService;
 
-    @ApiOperation(value = "查询菜单信息")
-    @GetMapping("/search")
-    public ResultDTO<MenuDTO> search() {
-        return moduleService.listMenu();
-    }
-
     @ApiOperation(value = "查询模块信息")
-    @GetMapping("/searchPageList")
+    @GetMapping()
     public ResultDTO<List<ModuleDTO>> searchPageList(String name, Integer page, Integer limit, String sort) {
         return moduleService.listModuleDTO(name, PageRequestDTO.ofOperation(page, limit, sort));
     }
@@ -57,15 +51,15 @@ public class ModuleController {
     }
 
     @ApiOperation(value = "查询菜单信息")
-    @GetMapping("/listMenu")
+    @GetMapping("/menus")
     public ResultDTO<MenuDTO> listMenu() {
         return moduleService.listMenu();
     }
 
     @ApiOperation(value = "根据父节点查询模块信息")
-    @GetMapping("/listModuleByParentId")
-    public ResultDTO<List<ModuleDTO>> listModuleByParentId(Long parentId) {
-        return moduleService.listModuleDTO(parentId);
+    @GetMapping("/{id}/Submodule")
+    public ResultDTO<List<ModuleDTO>> listModuleByParentId(@PathVariable("id") Long id) {
+        return moduleService.listModuleDTO(id);
     }
 
 }

@@ -9,16 +9,15 @@ class RoleService extends BaseService {
   }
   grantAuthorization(data) {
     return this.send({
-      urlMethod: 'grantAuthorization',
-      method: 'post',
+      urlMethod: data.id + '/permission_resources',
+      method: 'patch',
       data
     })
   }
   queryPermissionResource(roleId) {
     return this.send({
-      urlMethod: 'queryPermissionResource',
-      method: 'get',
-      params: { roleId }
+      urlMethod: roleId + '/permission_resources',
+      method: 'get'
     })
   }
 }

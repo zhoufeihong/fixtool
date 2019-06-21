@@ -3,7 +3,7 @@ import { MessageBox, Message, Loading } from 'element-ui'
 import store from '@/store'
 import serverConfig from '@/api/setting'
 
-const excludes = [serverConfig.ConsleServerName + '/api/user/login', serverConfig.ConsleServerName + '/api/user/refreshToken']
+const excludes = [serverConfig.ConsleServerName + '/api/user/access_token', serverConfig.ConsleServerName + '/api/user/refreshToken']
 
 // create an axios instance
 const service = axios.create({
@@ -35,6 +35,7 @@ const reLogin = () => {
 // request interceptor
 service.interceptors.request.use(
   config => {
+    startLoading()
     // do something before request is sent
     if (excludes.includes(config.url)) {
       return config
@@ -52,7 +53,6 @@ service.interceptors.request.use(
       // please modify it according to the actual situation
       config.headers['Authorization'] = store.getters.token
     }
-    startLoading()
     return config
   },
   error => {

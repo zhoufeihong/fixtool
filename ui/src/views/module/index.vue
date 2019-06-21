@@ -168,7 +168,7 @@ export default {
     },
     getList() {
       this.listLoading = true
-      moduleService.searchPageList(this.listQuery).then(response => {
+      moduleService.search(this.listQuery).then(response => {
         this.list = response.data
         this.total = response.total
 

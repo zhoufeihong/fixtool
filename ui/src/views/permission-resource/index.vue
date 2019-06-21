@@ -153,7 +153,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      permissionResourceService.searchPageList(this.listQuery).then(response => {
+      permissionResourceService.search(this.listQuery).then(response => {
         this.list = response.data
         this.total = response.total
 

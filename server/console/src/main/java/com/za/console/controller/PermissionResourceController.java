@@ -26,23 +26,13 @@ public class PermissionResourceController {
      * @return
      */
     @ApiOperation(value = "查询权限资源项信息")
-    @GetMapping("/search")
-    public ResultDTO<List<PermissionResourceDTO>> listPermissionResourceByName(String name) {
-        return permissionResourceService.listPermissionResource(name);
-    }
-
-    /**
-     * 查询权限资源项信息
-     *
-     * @param
-     * @return
-     */
-    @ApiOperation(value = "查询权限资源项信息")
-    @GetMapping("/searchPageList")
-    public ResultDTO<List<PermissionResourceDTO>> listPermissionResource(String name, Integer page, Integer limit, String sort) {
+    @GetMapping()
+    public ResultDTO<List<PermissionResourceDTO>> searchPageList(String name, Integer page, Integer limit, String sort) {
+        if (page == null) {
+            return permissionResourceService.listPermissionResource(name);
+        }
         return permissionResourceService.listPermissionResource(name, PageRequestDTO.ofOperation(page, limit, sort));
     }
-
 
     /**
      * 获取权限资源项信息
@@ -68,7 +58,6 @@ public class PermissionResourceController {
         return permissionResourceService.addPermissionResource(permissionResourceDTO);
     }
 
-
     /**
      * 更新权限资源项信息
      *
@@ -92,4 +81,5 @@ public class PermissionResourceController {
     public ResultDTO delete(@PathVariable("id") Long id) {
         return permissionResourceService.removePermissionResource(id);
     }
+
 }

@@ -1,7 +1,7 @@
 package com.za.console.controller;
 
 import com.za.common.dto.ResultDTO;
-import com.za.console.controller.vo.GetTokenParam;
+import com.za.console.controller.vo.PostTokenParam;
 import com.za.console.service.UserService;
 import com.za.console.service.dto.UserDTO;
 import io.swagger.annotations.Api;
@@ -35,8 +35,8 @@ public class UserController {
     }
 
     @ApiOperation(value = "查询用户信息")
-    @GetMapping("/search")
-    public PageResultDTO<List<UserDTO>> search(String userName, Integer page, Integer limit, String sort) {
+    @GetMapping()
+    public PageResultDTO<List<UserDTO>> searchPageList(String userName, Integer page, Integer limit, String sort) {
         return userService.listUser(userName, PageRequestDTO.ofOperation(page, limit, sort));
     }
 
@@ -47,26 +47,26 @@ public class UserController {
     }
 
     @ApiOperation(value = "更新角色信息")
-    @PutMapping("/updateRole")
-    public ResultDTO updateRole(@RequestBody UserDTO user) {
+    @PutMapping("/{id}/roles")
+    public ResultDTO updateRole(@PathVariable("id") Long id,@RequestBody UserDTO user) {
         return userService.updateRole(user);
     }
 
     @ApiOperation(value = "修改密码")
-    @PutMapping("/updatePassword")
-    public ResultDTO updatePassword(@RequestBody UserDTO userDto) {
+    @PutMapping("/{id}/password")
+    public ResultDTO updatePassword(@PathVariable("id") Long id,@RequestBody UserDTO userDto) {
         return userService.updatePassword(userDto);
     }
 
-    @ApiOperation(value = "获取Token")
-    @PostMapping("/getToken")
-    public ResultDTO getToken(@RequestBody GetTokenParam getTokenParam) {
-        return userService.getToken(getTokenParam.getUserCode(), getTokenParam.getPassword());
+    @ApiOperation(value = "创建Token")
+    @PostMapping("/access_token")
+    public ResultDTO getToken(@RequestBody PostTokenParam postTokenParam) {
+        return userService.getToken(postTokenParam.getUserCode(), postTokenParam.getPassword());
     }
 
-    @ApiOperation(value = "获取用户信息")
+    @ApiOperation(value = "获取秘钥用户信息")
     @ApiImplicitParam(name = "token", value = "token信息", required = true, dataType = "String", paramType = "query")
-    @GetMapping("/getUserInfo")
+    @GetMapping("/access_token/user_info")
     public ResultDTO getUserInfo(@RequestParam("accessToken") String accessToken) {
         return userService.getUserInfo(accessToken);
     }

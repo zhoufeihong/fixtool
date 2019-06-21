@@ -6,7 +6,7 @@ const controllerName = serverConfig.ConsleServerName + '/api/user/'
 
 export function login(data) {
   return request({
-    url: controllerName + 'getToken',
+    url: controllerName + 'access_token',
     method: 'post',
     data
   })
@@ -14,7 +14,7 @@ export function login(data) {
 
 export function getUserInfo(accessToken) {
   return request({
-    url: controllerName + 'getUserInfo',
+    url: controllerName + 'access_token/user_info',
     method: 'get',
     params: { accessToken }
   })
@@ -42,7 +42,7 @@ class UserService extends BaseService {
 
   updatePassword(data) {
     return this.send({
-      urlMethod: 'updatePassword',
+      urlMethod: data.id + '/password',
       method: 'put',
       data
     })
@@ -50,7 +50,7 @@ class UserService extends BaseService {
 
   updateRole(data) {
     return this.send({
-      urlMethod: 'updateRole',
+      urlMethod: data.id + '/roles',
       method: 'put',
       data
     })

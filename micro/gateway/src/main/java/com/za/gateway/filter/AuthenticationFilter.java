@@ -66,7 +66,7 @@ public class AuthenticationFilter {
     }
 
     private boolean needFilter(String path) {
-        if (path.endsWith("/user/getToken") || path.endsWith("/user/refreshToken")) {
+        if (path.endsWith("/user/access_token") || path.endsWith("/user/refreshToken")) {
             return false;
         }
         return true;

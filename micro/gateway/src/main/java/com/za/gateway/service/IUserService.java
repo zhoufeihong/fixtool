@@ -17,7 +17,7 @@ public interface IUserService {
     @Cacheable(key = "#id")
     ResultDTO getUser(@PathVariable long id);
 
-    @GetMapping("api/user/getUserInfo")
+    @GetMapping("api/user/access_token/user_info")
     @Cacheable(key = "#accessToken")
     ResultDTO getUserInfo(@RequestParam("accessToken") String accessToken);
 }
