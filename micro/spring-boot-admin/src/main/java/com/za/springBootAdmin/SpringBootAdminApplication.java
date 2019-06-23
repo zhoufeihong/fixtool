@@ -1,3 +1,5 @@
+package com.za.springBootAdmin;
+
 import com.hazelcast.config.Config;
 import com.hazelcast.config.EvictionPolicy;
 import com.hazelcast.config.InMemoryFormat;

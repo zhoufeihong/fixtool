@@ -3,7 +3,7 @@
     common:基础通用功能
     server:服务
         framework:服务通用基础功能
-        console: 菜单、用户、权限服务(Spring boot + jpa)
+        console: 菜单、用户、权限服务(Spring boot + Spring mvc + JPA)
         ...: 其他模块服务
     micro: 微服务相关模块
         eureka: 注册中心
